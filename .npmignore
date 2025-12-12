@@ -1,0 +1,31 @@
+# Source files
+src/
+*.test.ts
+*.test.js
+
+# Config files
+tsconfig.json
+vitest.config.ts
+.claude/
+
+# Documentation (not included in files array)
+USAGE.md
+QUICKSTART.md
+PROJECT_SUMMARY.md
+example.html
+
+# Development
+node_modules/
+.DS_Store
+*.log
+npm-debug.log*
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,7 +1,21 @@
 {
   "name": "@componentor/breakpoint",
   "version": "1.0.0",
-  "description": "Parse and manage CSS styles with breakpoints, themes, and states",
+  "description": "Parse and manage CSS styles with breakpoints, themes, and states using a compact colon syntax",
+  "keywords": [
+    "css",
+    "styles",
+    "breakpoints",
+    "responsive",
+    "dark-mode",
+    "theme",
+    "states",
+    "hover",
+    "typescript",
+    "esm",
+    "parser",
+    "conditional-styles"
+  ],
   "license": "MIT",
   "author": "",
   "type": "module",
@@ -14,13 +28,27 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/componentor/breakpoint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/componentor/breakpoint/issues"
+  },
+  "homepage": "https://github.com/componentor/breakpoint#readme",
+  "engines": {
+    "node": ">=16.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.0.1",
