@@ -169,6 +169,7 @@ parse('bg:blue; text:white; p:20px; shadow:0 2px 4px black');  // ✨ Much bette
 | `m` | `margin` |
 | `w` | `width` |
 | `h` | `height` |
+| `rounded` | `border-radius` |
 | `shadow` | `box-shadow` |
 | `justify` | `justify-content` |
 | `items` | `align-items` |

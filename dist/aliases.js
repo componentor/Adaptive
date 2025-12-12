@@ -54,6 +54,11 @@ export const DEFAULT_ALIASES = {
     'border-r': 'border-right',
     'border-b': 'border-bottom',
     'border-l': 'border-left',
+    'rounded': 'border-radius',
+    'rounded-tl': 'border-top-left-radius',
+    'rounded-tr': 'border-top-right-radius',
+    'rounded-bl': 'border-bottom-left-radius',
+    'rounded-br': 'border-bottom-right-radius',
     // Z-Index
     'z': 'z-index',
     // Flexbox
