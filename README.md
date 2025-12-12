@@ -103,7 +103,7 @@ const buttonStyles = parse(`
   border-radius:4px;
   hover:bg:darkblue;
   dark:bg:#1e40af;
-  md:p:16px-32px
+  md:p:16px 32px
 `);
 
 // Light theme, mobile
@@ -112,7 +112,7 @@ getStyle(buttonStyles);
 
 // Dark theme, tablet, hover
 getStyle(buttonStyles, { theme: 'dark', breakpoint: 'md', state: 'hover' });
-// "background: darkblue; color: white; padding: 16px-32px; border-radius: 4px;"
+// "background: darkblue; color: white; padding: 16px 32px; border-radius: 4px;"
 ```
 
 ### Custom Aliases
@@ -174,7 +174,7 @@ getStyle(parsed, { theme: 'dark' });
 #### Responsive Design
 
 ```typescript
-const parsed = parse('font-size:14px; sm:font-size-16px; md:font-size:18px; lg:font-size:24px');
+const parsed = parse('font-size:14px; sm:font-size:16px; md:font-size:18px; lg:font-size:24px');
 
 getStyle(parsed); // Mobile
 // "font-size: 14px;"
@@ -219,7 +219,7 @@ const buttonStyles = parse(`
   display:inline-flex;
   align-items:center;
   gap:8px;
-  padding:12px-24px;
+  padding:12px 24px;
   background:blue;
   color:white;
   border-radius:4px;
@@ -230,7 +230,7 @@ const buttonStyles = parse(`
   disabled:cursor:not-allowed;
   dark:background:lightblue;
   dark:hover:background:blue;
-  md:padding:16px-32px;
+  md:padding:16px 32px;
   lg:font-size:18px
 `);
 

@@ -103,7 +103,7 @@ Custom themes are also supported:
 
 ```typescript
 parse('midnight:color:purple')
-parse('highcontrast:border:3px-solid-black')
+parse('highcontrast:border:3px solid black')
 ```
 
 #### Breakpoints
@@ -230,7 +230,7 @@ const cardStyles = parse(`
 
   lg:padding:32px;
 
-  dark:md:hover:border:2px-solid-blue
+  dark:md:hover:border:2px solid blue
 `);
 
 // Light theme, mobile, normal

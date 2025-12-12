@@ -95,7 +95,7 @@ import { useMemo } from 'react';
 
 // Parse once outside component
 const BUTTON_STYLES = parse(`
-  padding:12px-24px;
+  padding:12px 24px;
   background:blue;
   color:white;
   hover:background:darkblue;

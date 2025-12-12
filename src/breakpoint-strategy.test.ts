@@ -213,15 +213,15 @@ describe('breakpoint strategy', () => {
         display:grid;
         grid-template-columns:1fr;
         gap:10px;
-        md:grid-template-columns:1fr-1fr;
+        md:grid-template-columns:1fr 1fr;
         md:gap:20px;
-        lg:grid-template-columns:1fr-1fr-1fr;
+        lg:grid-template-columns:1fr 1fr 1fr;
         lg:gap:30px
       `);
 
       const desktop = getStyle(grid, { breakpoint: 'lg', breakpointStrategy: 'mobile-first' });
       expect(desktop).toContain('display: grid;');
-      expect(desktop).toContain('grid-template-columns: 1fr-1fr-1fr;');
+      expect(desktop).toContain('grid-template-columns: 1fr 1fr 1fr;');
       expect(desktop).toContain('gap: 30px;');
     });
   });
