@@ -1,13 +1,14 @@
 # @componentor/breakpoint
 
-> **Write styles once. Use them everywhere.** A compact syntax for responsive, themed, and stateful CSS.
+> Write styles once. Use them everywhere.
+
+A compact, powerful syntax for responsive, themed, and stateful CSS—all in one string.
 
 ```typescript
-// One string, infinite possibilities
 parse('bg:blue; text:white; hover:bg:navy; dark:bg:purple; md:p:20px')
 ```
 
-**Why?** Because writing `dark:md:hover:background:purple` is easier than juggling CSS classes, media queries, and theme logic across your app.
+Instead of juggling CSS files, media queries, and theme logic, write `dark:md:hover:bg:purple` and move on with your life.
 
 ---
 
@@ -160,14 +161,18 @@ parse('bg:blue; text:white; p:20px; shadow:0 2px 4px black');  // ✨ Much bette
 
 ### Popular Aliases
 
-| Alias | Full Property | Alias | Full Property |
-|-------|--------------|-------|--------------|
-| `bg` | `background` | `text` | `color` |
-| `p` | `padding` | `m` | `margin` |
-| `w` | `width` | `h` | `height` |
-| `rounded` | `border-radius` | `shadow` | `box-shadow` |
-| `justify` | `justify-content` | `items` | `align-items` |
-| `grid-cols` | `grid-template-columns` | `gap` | `gap` |
+| Alias | Full Property |
+|-------|--------------|
+| `bg` | `background` |
+| `text` | `color` |
+| `p` | `padding` |
+| `m` | `margin` |
+| `w` | `width` |
+| `h` | `height` |
+| `shadow` | `box-shadow` |
+| `justify` | `justify-content` |
+| `items` | `align-items` |
+| `grid-cols` | `grid-template-columns` |
 
 [See all 75+ aliases →](src/aliases.ts)
 
