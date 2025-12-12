@@ -1,565 +1,475 @@
-# @componentor/breakpoints
+# @componentor/breakpoint
 
-A TypeScript library for parsing and managing CSS styles with breakpoints, themes, and states in a compact syntax.
+> **Write styles once. Use them everywhere.** A compact syntax for responsive, themed, and stateful CSS.
 
-## Features
+```typescript
+// One string, infinite possibilities
+parse('bg:blue; text:white; hover:bg:navy; dark:bg:purple; md:p:20px')
+```
 
-- Parse enhanced style strings with conditional prefixes
-- **Unlimited custom themes** (dark/light/custom) with smart fallback strategies
-- **Breakpoint strategies** (mobile-first/desktop-first/exact) for responsive design
-- Support for interactive states (hover/active/focus/etc.)
-- **Theme strategies** (strict/fallback) for graceful degradation
-- System theme detection support
-- Full TypeScript support with type definitions
-- **IntelliSense Support** - Full autocomplete for CSS properties and aliases (powered by csstype)
-- **Type-Safe Builder API** - Fluent interface with IntelliSense
-- **Integration Utilities** - Easy integration for other libraries
-- ESM modules that work in browsers and Node.js
-- **CSS Property Aliases** - Concise shorthand notation (bg, text, w, h, p, m, etc.)
-- Comprehensive test coverage (128 tests)
+**Why?** Because writing `dark:md:hover:background:purple` is easier than juggling CSS classes, media queries, and theme logic across your app.
 
-## Installation
+---
 
+## ⚡ Quick Start
+
+**1. Install**
 ```bash
-npm install @componentor/breakpoints
+npm install @componentor/breakpoint
 ```
 
-> **💡 Want IntelliSense & Autocomplete?** Check out [INTELLISENSE.md](INTELLISENSE.md) for the Builder API with full TypeScript autocomplete for CSS properties and aliases!
+**2. Write your first style**
+```typescript
+import { parse, getStyle } from '@componentor/breakpoint';
 
-## Usage
+const styles = parse('bg:blue; text:white; hover:bg:darkblue; dark:bg:purple');
 
-### Basic Example
+getStyle(styles);                           // → "background: blue; color: white;"
+getStyle(styles, { state: 'hover' });       // → "background: darkblue; color: white;"
+getStyle(styles, { theme: 'dark' });        // → "background: purple; color: white;"
+```
+
+**That's it!** 🎉 You're managing themes, states, and responsive design with simple colon syntax.
+
+---
+
+## 🚀 What Can You Do?
+
+| Feature | Example | Result |
+|---------|---------|--------|
+| **Themes** | `dark:bg:black` | Different colors for dark mode |
+| **Breakpoints** | `md:p:20px` | Responsive padding on tablets |
+| **States** | `hover:opacity:0.8` | Hover effects |
+| **Combine All** | `dark:md:hover:bg:purple` | All conditions at once! |
+| **Aliases** | `bg` instead of `background` | 75+ shortcuts built-in |
+| **Custom Themes** | `sunset:bg:orange` | Name your themes anything |
+
+---
+
+## 💡 Why Use This?
+
+**The Old Way:**
+```css
+.button {
+  background: blue;
+}
+.button:hover {
+  background: darkblue;
+}
+@media (min-width: 768px) {
+  .button {
+    padding: 20px;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .button {
+    background: purple;
+  }
+  .button:hover {
+    background: navy;
+  }
+}
+```
+
+**The New Way:**
+```typescript
+parse('bg:blue; hover:bg:darkblue; md:p:20px; dark:bg:purple; dark:hover:bg:navy')
+```
+
+Same functionality. **90% less code.** No CSS file needed.
+
+---
+
+## 🎨 Examples That'll Make You Smile
+
+### Build a Complete Button
 
 ```typescript
-import { parse, getStyle } from '@componentor/breakpoints';
-
-// Parse a style string
-const styleString = 'color:red; padding:10px; dark:color:white';
-const parsed = parse(styleString);
-
-// Get CSS for different contexts
-const lightCSS = getStyle(parsed, { theme: 'light' });
-// Returns: "color: red; padding: 10px;"
-
-const darkCSS = getStyle(parsed, { theme: 'dark' });
-// Returns: "color: white; padding: 10px;"
-```
-
-### Syntax
-
-The format follows HTML style attributes, but with optional conditional prefixes:
-
-```
-${condition1}:${condition2}:${property}:${value};
-```
-
-Where conditions can be:
-- **Theme**: `dark`, `light`, or custom theme names
-- **Breakpoint**: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, or custom breakpoints
-- **State**: `hover`, `active`, `focus`, `visited`, `focus-visible`, `disabled`, etc.
-
-## CSS Property Aliases
-
-To make your styles more concise, the library supports **property aliases**. Use shorthand like `bg` instead of `background`, `text` instead of `color`, `w` instead of `width`, and many more.
-
-### Common Aliases
-
-```typescript
-import { parse, getStyle } from '@componentor/breakpoints';
-
-// Use aliases for cleaner syntax
-const styles = parse('bg:blue; text:white; p:20px; shadow:0 2px 4px rgba(0,0,0,0.1)');
-
-// Aliases are automatically resolved to full CSS properties
-getStyle(styles);
-// Returns: "background: blue; color: white; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
-```
-
-### Built-in Aliases
-
-The library includes **75+ built-in aliases** covering:
-
-- **Background**: `bg` → `background`, `bg-color` → `background-color`
-- **Text**: `text` → `color`
-- **Spacing**: `m` → `margin`, `mt` → `margin-top`, `mx` → `margin-inline`, `p` → `padding`, `px` → `padding-inline`
-- **Sizing**: `w` → `width`, `h` → `height`, `min-w` → `min-width`, `max-h` → `max-height`
-- **Border**: `border-w` → `border-width`, `border-t` → `border-top`
-- **Flexbox**: `justify` → `justify-content`, `items` → `align-items`, `align` → `align-self`
-- **Grid**: `grid-cols` → `grid-template-columns`, `col` → `grid-column`, `gap-x` → `column-gap`
-- **Effects**: `shadow` → `box-shadow`, `mix-blend` → `mix-blend-mode`
-- **Position**: `z` → `z-index`, `inset-x` → `inset-inline`
-- **Typography**: `size` → `font-size`
-- And many more!
-
-### Aliases with Conditions
-
-Aliases work seamlessly with themes, breakpoints, and states:
-
-```typescript
-const buttonStyles = parse(`
-  bg:blue;
-  text:white;
-  p:10px 20px;
-  border-radius:4px;
+const button = parse(`
+  bg:blue; text:white; p:12px 24px; rounded:8px; cursor:pointer;
   hover:bg:darkblue;
-  dark:bg:#1e40af;
-  md:p:16px 32px
-`);
-
-// Light theme, mobile
-getStyle(buttonStyles);
-// "background: blue; color: white; padding: 10px 20px; border-radius: 4px;"
-
-// Dark theme, tablet, hover
-getStyle(buttonStyles, { theme: 'dark', breakpoint: 'md', state: 'hover' });
-// "background: darkblue; color: white; padding: 16px 32px; border-radius: 4px;"
-```
-
-### Custom Aliases
-
-Register your own custom aliases:
-
-```typescript
-import { registerAlias, registerAliases } from '@componentor/breakpoints';
-
-// Register a single alias
-registerAlias('bgc', 'background-color');
-
-// Register multiple aliases at once
-registerAliases({
-  'txt': 'color',
-  'fw': 'font-weight',
-  'fs': 'font-size'
-});
-
-// Use your custom aliases
-const styles = parse('bgc:red; txt:white; fw:bold; fs:16px');
-getStyle(styles);
-// "background-color: red; color: white; font-weight: bold; font-size: 16px;"
-```
-
-### Alias Utilities
-
-```typescript
-import { isAlias, getAllAliases, clearCustomAliases } from '@componentor/breakpoints';
-
-// Check if a property is an alias
-isAlias('bg');        // true
-isAlias('background'); // false
-
-// Get all registered aliases (built-in + custom)
-const allAliases = getAllAliases();
-// { bg: 'background', text: 'color', w: 'width', ... }
-
-// Clear all custom aliases
-clearCustomAliases();
-```
-
-**Note:** Custom aliases take priority over built-in aliases, so you can override defaults if needed.
-
-### Examples
-
-#### Theme-based Styling
-
-```typescript
-const parsed = parse('background:white; color-black; dark:background:black; dark:color:white');
-
-getStyle(parsed, { theme: 'light' });
-// "background: white; color: black;"
-
-getStyle(parsed, { theme: 'dark' });
-// "background: black; color: white;"
-```
-
-#### Responsive Design
-
-```typescript
-const parsed = parse('font-size:14px; sm:font-size:16px; md:font-size:18px; lg:font-size:24px');
-
-getStyle(parsed); // Mobile
-// "font-size: 14px;"
-
-getStyle(parsed, { breakpoint: 'md' }); // Tablet
-// "font-size: 18px;"
-
-getStyle(parsed, { breakpoint: 'lg' }); // Desktop
-// "font-size: 24px;"
-```
-
-#### Interactive States
-
-```typescript
-const parsed = parse('opacity:1; color:blue; hover:opacity:0.8; hover:color:darkblue');
-
-getStyle(parsed); // Normal state
-// "opacity: 1; color: blue;"
-
-getStyle(parsed, { state: 'hover' }); // Hover state
-// "opacity: 0.8; color: darkblue;"
-```
-
-#### Combined Conditions
-
-```typescript
-const parsed = parse('padding:10px; dark:md:hover:padding:30px; dark:md:hover:background:purple');
-
-// Base styling
-getStyle(parsed);
-// "padding: 10px;"
-
-// Dark theme + tablet + hover
-getStyle(parsed, { theme: 'dark', breakpoint: 'md', state: 'hover' });
-// "padding: 30px; background: purple;"
-```
-
-#### Real-World Component
-
-```typescript
-const buttonStyles = parse(`
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:12px 24px;
-  background:blue;
-  color:white;
-  border-radius:4px;
-  cursor:pointer;
-  hover:background:darkblue;
-  active:transform:scale(0.98);
+  active:scale(0.98);
   disabled:opacity:0.5;
-  disabled:cursor:not-allowed;
-  dark:background:lightblue;
-  dark:hover:background:blue;
-  md:padding:16px 32px;
-  lg:font-size:18px
+  dark:bg:purple; dark:hover:bg:navy;
+  md:p:16px 32px;
+  lg:text:18px
 `);
 
-// Mobile, light theme, normal state
-getStyle(buttonStyles);
+// Mobile light mode → Blue button, 12px padding
+getStyle(button);
 
-// Desktop, dark theme, hover state
-getStyle(buttonStyles, { breakpoint: 'lg', theme: 'dark', state: 'hover' });
+// Desktop dark mode hover → Navy button, 16px padding, 18px text
+getStyle(button, { breakpoint: 'lg', theme: 'dark', state: 'hover' });
 ```
 
-## Theme Strategies
-
-The library supports two theme matching strategies:
-
-### Strict (Default)
-
-Only matches the exact theme specified:
+### Responsive Card Layout
 
 ```typescript
-const styles = parse('color:blue; dark:color:white; light:color:black');
-
-getStyle(styles, { theme: 'dark' });
-// Returns: "color: white;"
-
-getStyle(styles, { theme: 'custom' });
-// Returns: "color: blue;" (only base, no custom theme defined)
+const card = parse(`
+  bg:white; p:1rem; shadow:0 2px 4px rgba(0,0,0,0.1); rounded:8px;
+  md:p:1.5rem;
+  lg:p:2rem;
+  dark:bg:#1f2937; dark:shadow:0 2px 8px rgba(0,0,0,0.3);
+  hover:shadow:0 4px 12px rgba(0,0,0,0.15)
+`);
 ```
 
-### Fallback
-
-Automatically falls back to other available themes when the requested theme doesn't exist:
+### Auto Dark Mode
 
 ```typescript
-const styles = parse('color:blue; dark:color:white');
+const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-// Light theme doesn't exist, falls back to dark
+const styles = parse('bg:white; text:black; dark:bg:black; dark:text:white');
+
+getThemedStyle(styles, {}, isDark);  // Automatically picks the right theme!
+```
+
+---
+
+## 🎯 The Syntax (It's Super Simple)
+
+```
+condition:condition:property:value;
+```
+
+**Conditions** can be:
+- **Theme**: `dark`, `light`, or `midnight`, `sunset`, `ocean` (you name it!)
+- **Breakpoint**: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`
+- **State**: `hover`, `focus`, `active`, `disabled`, etc.
+
+**Mix and match:**
+```typescript
+'color:blue'                    // Base color
+'dark:color:white'              // Dark theme
+'md:color:purple'               // Medium breakpoint
+'hover:color:red'               // Hover state
+'dark:md:hover:color:orange'    // All three! 🔥
+```
+
+---
+
+## ✨ Property Aliases (Type Less, Do More)
+
+We've got **75+ shortcuts** so you can write styles faster:
+
+```typescript
+// These are the same:
+parse('background:blue; color:white; padding:20px; box-shadow:0 2px 4px black');
+parse('bg:blue; text:white; p:20px; shadow:0 2px 4px black');  // ✨ Much better!
+```
+
+### Popular Aliases
+
+| Alias | Full Property | Alias | Full Property |
+|-------|--------------|-------|--------------|
+| `bg` | `background` | `text` | `color` |
+| `p` | `padding` | `m` | `margin` |
+| `w` | `width` | `h` | `height` |
+| `rounded` | `border-radius` | `shadow` | `box-shadow` |
+| `justify` | `justify-content` | `items` | `align-items` |
+| `grid-cols` | `grid-template-columns` | `gap` | `gap` |
+
+[See all 75+ aliases →](src/aliases.ts)
+
+### Make Your Own Aliases
+
+```typescript
+import { registerAlias } from '@componentor/breakpoint';
+
+registerAlias('bgc', 'background-color');
+registerAlias('fw', 'font-weight');
+
+parse('bgc:red; fw:bold');  // Works! 🎉
+```
+
+---
+
+## 🎭 Theme Strategies
+
+### Default: Strict Mode
+
+Only uses the exact theme you ask for:
+
+```typescript
+const styles = parse('color:gray; dark:color:white; light:color:black');
+
+getStyle(styles, { theme: 'dark' });   // → "color: white;"
+getStyle(styles, { theme: 'custom' }); // → "color: gray;" (no custom theme, uses base)
+```
+
+### Fallback Mode (Smart!)
+
+Automatically finds the best match when your theme doesn't exist:
+
+```typescript
+const styles = parse('color:gray; dark:color:white');
+
+// Light theme doesn't exist, so falls back to dark
 getStyle(styles, { theme: 'light', themeStrategy: 'fallback' });
-// Returns: "color: white;"
-
-// Custom theme doesn't exist, falls back to dark
-getStyle(styles, { theme: 'midnight', themeStrategy: 'fallback' });
-// Returns: "color: white;"
+// → "color: white;"
 ```
 
-### Helper for Common Pattern
+**Pro tip:** Use `getThemedStyle()` for automatic dark/light switching:
 
-Use `getThemedStyle` for automatic dark/light theming with fallback:
-
-```typescript
-import { parse, getThemedStyle } from '@componentor/breakpoints';
-
-const styles = parse('bg:white; dark:bg:black; color:gray; dark:color:white');
-
-// Light theme (default)
-getThemedStyle(styles, {});
-// Returns: "bg: white; color: gray;"
-
-// Dark theme
-getThemedStyle(styles, {}, true);
-// Returns: "bg: black; color: white;"
-
-// With breakpoints and states
-getThemedStyle(styles, { breakpoint: 'md', state: 'hover' });
-```
-
-### System Theme Detection
-
-```typescript
-// Detect user's system preference
-const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-  ? 'dark'
-  : 'light';
-
-const styles = parse(`
-  background:white;
-  color:black;
-  dark:background:#1a1a1a;
-  dark:color:#e5e5e5
-`);
-
-const css = getStyle(styles, {
-  theme: systemTheme,
-  themeStrategy: 'fallback'
-});
-```
-
-See [THEME_STRATEGIES.md](THEME_STRATEGIES.md) for detailed documentation.
-
-## Custom Themes
-
-The library supports **unlimited custom theme names** beyond `dark` and `light`:
-
-```typescript
-const styles = parse(`
-  background:white;
-  dark:background:black;
-  midnight:background:#1a1a2e;
-  sunset:background:#ff6b6b;
-  ocean:background:#006994
-`);
-
-getStyle(styles, { theme: 'midnight' });
-// Returns: "background: #1a1a2e;"
-
-getStyle(styles, { theme: 'sunset' });
-// Returns: "background: #ff6b6b;"
-```
-
-### Important: Avoid Name Conflicts
-
-**Do not use the same names as breakpoints or states for themes:**
-
-```typescript
-// ❌ BAD - 'md' is a known breakpoint
-parse('md:background:blue');
-// Interpreted as breakpoint, not theme!
-
-// ✅ GOOD - Use distinct theme names
-parse('medium-theme:background:blue');
-// Clearly a custom theme
-```
-
-**Condition Resolution Order:**
-1. If name matches a known breakpoint (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`) → treated as **breakpoint**
-2. Else if name matches a known state (`hover`, `active`, `focus`, etc.) → treated as **state**
-3. Else → treated as **custom theme**
-
-This allows infinite theme names while maintaining predictable behavior. Just avoid using `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `hover`, `active`, `focus`, `visited`, `focus-visible`, `focus-within`, `disabled`, `enabled`, or `checked` as theme names.
-
-## Breakpoint Strategies
-
-The library supports three breakpoint matching strategies:
-
-```typescript
-const styles = parse('font-size:14px; sm:font-size:16px; md:font-size:18px; lg:font-size:20px');
-
-// Exact (default): Only match the specified breakpoint
-getStyle(styles, { breakpoint: 'md' });
-// Returns: "font-size: 18px;"
-
-// Mobile-first: Include base up to current breakpoint
-getStyle(styles, { breakpoint: 'md', breakpointStrategy: 'mobile-first' });
-// Returns: "font-size: 18px;" (includes base → sm → md)
-
-// Desktop-first: Include current breakpoint and larger
-getStyle(styles, { breakpoint: 'md', breakpointStrategy: 'desktop-first' });
-// Returns: "font-size: 20px;" (includes md → lg)
-```
-
-See [BREAKPOINT_STRATEGIES.md](BREAKPOINT_STRATEGIES.md) for detailed documentation.
-
-## API
-
-### `parse(input: string): ParsedStyles`
-
-Parses an enhanced style string into a structured object.
-
-**Parameters:**
-- `input` - Style string with optional conditional prefixes
-
-**Returns:**
-- `ParsedStyles` object containing parsed style rules
-
-### `getStyle(parsedStyles: ParsedStyles, options?: GetStyleOptions): string`
-
-Extracts CSS styles matching the given context.
-
-**Parameters:**
-- `parsedStyles` - The parsed styles object from `parse()`
-- `options` - Optional context (theme, state, breakpoint)
-
-**Returns:**
-- CSS style string with matching properties
-
-### `getThemedStyle(parsedStyles: ParsedStyles, options?, preferDark?): string`
-
-Convenience helper for dark/light theming with automatic fallback. Always uses `themeStrategy: 'fallback'`.
-
-**Parameters:**
-- `parsedStyles` - The parsed styles object from `parse()`
-- `options` - Optional context (breakpoint, state, theme)
-- `preferDark` - If `true`, uses 'dark' theme; if `false`, uses 'light' theme (default: `false`)
-
-**Returns:**
-- CSS style string with matching properties
-
-**Example:**
 ```typescript
 const styles = parse('bg:white; dark:bg:black');
 
-getThemedStyle(styles, {});           // Light theme
-getThemedStyle(styles, {}, true);     // Dark theme
-getThemedStyle(styles, { theme: 'custom' }); // Custom theme with fallback
+getThemedStyle(styles, {});        // Light mode
+getThemedStyle(styles, {}, true);  // Dark mode
+```
+
+---
+
+## 📱 Responsive Breakpoint Strategies
+
+Choose how breakpoints cascade:
+
+```typescript
+const styles = parse('size:14px; sm:size:16px; md:size:18px; lg:size:20px');
+```
+
+### Exact (Default)
+```typescript
+getStyle(styles, { breakpoint: 'md' });
+// → "font-size: 18px;"  (only md)
+```
+
+### Mobile-First
+```typescript
+getStyle(styles, { breakpoint: 'md', breakpointStrategy: 'mobile-first' });
+// → "font-size: 18px;"  (base → sm → md, last wins)
+```
+
+### Desktop-First
+```typescript
+getStyle(styles, { breakpoint: 'md', breakpointStrategy: 'desktop-first' });
+// → "font-size: 20px;"  (md → lg, last wins)
+```
+
+---
+
+## 🧰 Want IntelliSense & Autocomplete?
+
+We've got a **type-safe builder API** with full autocomplete for all CSS properties!
+
+```typescript
+import { createStyleBuilder } from '@componentor/breakpoint';
+
+const styles = createStyleBuilder()
+  .style('background', 'blue')     // ← Full CSS autocomplete!
+  .themed('dark', 'bg', 'purple')
+  .responsive('md', 'padding', '20px')
+  .state('hover', 'opacity', '0.8')
+  .build();
+```
+
+**[Check out INTELLISENSE.md for the full guide →](INTELLISENSE.md)**
+
+---
+
+## 🎨 Custom Themes (Go Wild!)
+
+```typescript
+const styles = parse(`
+  bg:white;
+  dark:bg:black;
+  midnight:bg:#001a33;
+  sunset:bg:#ff6b6b;
+  ocean:bg:#006994;
+  forest:bg:#2d5016
+`);
+
+getStyle(styles, { theme: 'sunset' });  // → "background: #ff6b6b;"
+getStyle(styles, { theme: 'ocean' });   // → "background: #006994;"
+```
+
+⚠️ **Just don't name your themes `md`, `hover`, `sm`, etc.** Those are reserved for breakpoints and states!
+
+---
+
+## 🔧 API Reference
+
+### Core Functions
+
+#### `parse(input: string): ParsedStyles`
+
+Turn a style string into a parsed object.
+
+```typescript
+const parsed = parse('bg:blue; dark:bg:purple; hover:opacity:0.8');
+```
+
+#### `getStyle(parsedStyles, options?): string`
+
+Extract CSS for a specific context.
+
+```typescript
+getStyle(parsed, { theme: 'dark', state: 'hover' });
+// → "background: purple; opacity: 0.8;"
+```
+
+**Options:**
+```typescript
+{
+  theme?: 'dark' | 'light' | string;
+  breakpoint?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | string;
+  state?: 'hover' | 'active' | 'focus' | 'disabled' | string;
+  breakpointStrategy?: 'exact' | 'mobile-first' | 'desktop-first';
+  themeStrategy?: 'strict' | 'fallback';
+}
+```
+
+#### `getThemedStyle(parsedStyles, options?, preferDark?): string`
+
+Convenience helper for dark/light themes (always uses fallback strategy).
+
+```typescript
+getThemedStyle(parsed, {});           // Light mode
+getThemedStyle(parsed, {}, true);     // Dark mode
+getThemedStyle(parsed, { breakpoint: 'md' }, true);  // Dark mode + tablet
 ```
 
 ### Alias Functions
 
-#### `registerAlias(alias: string, property: string): void`
-
-Register a single custom alias.
-
-**Parameters:**
-- `alias` - The short alias name
-- `property` - The full CSS property name
-
-**Example:**
 ```typescript
+// Register custom aliases
 registerAlias('bgc', 'background-color');
+registerAliases({ txt: 'color', fw: 'font-weight' });
+
+// Check aliases
+isAlias('bg');        // → true
+isAlias('background'); // → false
+
+// Get all aliases
+getAllAliases();      // → { bg: 'background', text: 'color', ... }
+
+// Clear custom aliases
+clearCustomAliases();
+
+// View built-in aliases
+DEFAULT_ALIASES;      // → Read-only map of all 75+ built-in aliases
 ```
 
-#### `registerAliases(aliases: Record<string, string>): void`
+---
 
-Register multiple custom aliases at once.
+## 🌐 Browser Usage
 
-**Parameters:**
-- `aliases` - Object mapping alias names to CSS properties
-
-**Example:**
-```typescript
-registerAliases({
-  'txt': 'color',
-  'fw': 'font-weight',
-  'fs': 'font-size'
-});
-```
-
-#### `clearCustomAliases(): void`
-
-Clear all custom aliases (built-in aliases remain).
-
-#### `getAllAliases(): Record<string, string>`
-
-Get all currently registered aliases (built-in + custom). Custom aliases override built-in ones.
-
-**Returns:**
-- Combined object of all aliases
-
-#### `isAlias(property: string): boolean`
-
-Check if a property name is a registered alias.
-
-**Parameters:**
-- `property` - Property name to check
-
-**Returns:**
-- `true` if it's a registered alias, `false` otherwise
-
-**Example:**
-```typescript
-isAlias('bg');        // true
-isAlias('background'); // false
-```
-
-#### `DEFAULT_ALIASES: Record<string, string>`
-
-The complete built-in alias map. Read-only reference to all 75+ built-in property aliases.
-
-### Types
-
-```typescript
-type Theme = 'dark' | 'light' | string;
-type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | string;
-type State = 'hover' | 'active' | 'focus' | 'visited' | 'disabled' | string;
-type BreakpointStrategy = 'mobile-first' | 'desktop-first' | 'exact';
-type ThemeStrategy = 'strict' | 'fallback';
-
-interface GetStyleOptions {
-  theme?: Theme;
-  state?: State;
-  breakpoint?: Breakpoint;
-  breakpointStrategy?: BreakpointStrategy;
-  themeStrategy?: ThemeStrategy;
-}
-
-interface ParsedStyles {
-  styles: ParsedStyle[];
-}
-
-interface ParsedStyle {
-  property: string;
-  value: string;
-  conditions: StyleConditions;
-}
-```
-
-## Browser Usage
-
-The library works directly in browsers using ESM imports:
+Works out of the box in modern browsers:
 
 ```html
 <script type="module">
-  import { parse, getStyle } from './dist/index.js';
+  import { parse, getStyle } from './node_modules/@componentor/breakpoint/dist/index.js';
 
-  const parsed = parse('color:blue; dark:color-lightblue');
+  const parsed = parse('color:blue; dark:color:purple');
   console.log(getStyle(parsed, { theme: 'dark' }));
 </script>
 ```
 
-See [example.html](example.html) for a complete browser demo.
+[See example.html for a full demo →](example.html)
 
-## CSS Property Support
+---
 
-The parser recognizes common CSS properties including:
-- Layout: `display`, `position`, `flex`, `grid`, `gap`
-- Spacing: `margin`, `padding`, `margin-top`, `padding-left`, etc.
-- Sizing: `width`, `height`, `min-width`, `max-height`, etc.
-- Colors: `color`, `background`, `background-color`, etc.
-- Typography: `font-family`, `font-size`, `font-weight`, `line-height`, etc.
-- Borders: `border`, `border-radius`, `border-color`, etc.
-- Effects: `opacity`, `box-shadow`, `text-shadow`, `transform`, `transition`
+## 📚 Advanced Guides
 
-For unknown properties, the parser uses a heuristic approach (first segment as property name).
+- **[IntelliSense Guide](INTELLISENSE.md)** - Type-safe builder API with autocomplete
+- **[Theme Strategies](THEME_STRATEGIES.md)** - Deep dive into theme fallback logic
+- **[Breakpoint Strategies](BREAKPOINT_STRATEGIES.md)** - Mobile-first vs desktop-first
+- **[Usage Examples](USAGE.md)** - Real-world integration patterns
 
-## Development
+---
 
-```bash
-# Install dependencies
-npm install
+## 🧪 Integration Examples
 
-# Run tests
-npm test
+### React Component
 
-# Build
-npm run build
+```typescript
+import { parse, getStyle } from '@componentor/breakpoint';
+import { useMemo } from 'react';
 
-# Watch mode for tests
-npm run test:watch
+function Button({ variant = 'primary', size = 'md', isDark = false }) {
+  const styles = useMemo(() => parse(`
+    bg:blue; text:white; p:12px 24px; rounded:8px;
+    hover:bg:darkblue;
+    dark:bg:purple; dark:hover:bg:navy;
+    md:p:16px 32px;
+    ${variant === 'secondary' ? 'bg:gray; hover:bg:darkgray' : ''}
+  `), [variant]);
+
+  const css = getStyle(styles, {
+    breakpoint: size,
+    theme: isDark ? 'dark' : 'light',
+  });
+
+  return <button style={{ cssText: css }}>Click me</button>;
+}
 ```
 
-## License
+### Vue Component
 
-MIT
+```vue
+<script setup>
+import { parse, getThemedStyle } from '@componentor/breakpoint';
+import { computed } from 'vue';
+
+const isDark = inject('isDark');
+const parsed = parse('bg:white; dark:bg:black; p:20px; rounded:8px');
+
+const styles = computed(() => getThemedStyle(parsed, {}, isDark.value));
+</script>
+
+<template>
+  <div :style="styles">
+    Themed card
+  </div>
+</template>
+```
+
+---
+
+## 💪 TypeScript Support
+
+Fully typed with IntelliSense support!
+
+```typescript
+import type { ParsedStyles, GetStyleOptions, Theme, Breakpoint, State } from '@componentor/breakpoint';
+
+const options: GetStyleOptions = {
+  theme: 'dark',
+  breakpoint: 'md',
+  state: 'hover',
+  breakpointStrategy: 'mobile-first',
+  themeStrategy: 'fallback'
+};
+```
+
+---
+
+## 🧪 Testing
+
+128 tests. 100% passing. Built with confidence.
+
+```bash
+npm test           # Run all tests
+npm run test:watch # Watch mode
+npm run build      # Build the library
+```
+
+---
+
+## 📄 License
+
+MIT - Go build something awesome!
+
+---
+
+## ⭐ Why You'll Love This
+
+✅ **Write less** - One string instead of CSS files, classes, and media queries
+✅ **Type safe** - Full TypeScript support with IntelliSense
+✅ **Zero dependencies** - Just 1 tiny dependency (csstype for types)
+✅ **Tiny** - ESM-only, tree-shakeable
+✅ **Fast** - Parsed once, used everywhere
+✅ **Flexible** - Unlimited themes, custom breakpoints, custom aliases
+✅ **Simple** - If you know CSS, you already know this
+
+**[Get started now →](#-quick-start)**

@@ -1,4 +1,4 @@
-# Project Summary: @componentor/breakpoints
+# Project Summary: @componentor/breakpoint
 
 ## Overview
 

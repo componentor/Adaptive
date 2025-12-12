@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.3.3] - 2025-12-12
+
+### Fixed
+
+- **Critical: Package Name Inconsistency**: Fixed incorrect package name throughout all documentation
+  - Changed `@componentor/breakpoints` (plural) → `@componentor/breakpoint` (singular)
+  - **Impact**: Users can now correctly install the package using `npm install @componentor/breakpoint`
+  - **Files updated**: README.md, QUICKSTART.md, USAGE.md, INTELLISENSE.md, PROJECT_SUMMARY.md, example.html
+
+### Verified
+
+- All 128 tests passing
+- Build successful with no errors or warnings
+- All TypeScript types properly exported
+
+## [1.3.2] - 2025-12-12
+
+### Fixed
+
+- **CSS Syntax Errors**: Fixed invalid CSS syntax throughout documentation and tests
+  - Fixed multi-value properties using dashes instead of spaces (e.g., `10px-20px` → `10px 20px`)
+  - Fixed grid template columns (e.g., `1fr-1fr` → `1fr 1fr`)
+  - Fixed border shorthand (e.g., `3px-solid-black` → `3px solid black`)
+  - Fixed missing colon in property:value pairs (e.g., `sm:font-size-16px` → `sm:font-size:16px`)
+
+## [1.3.1] - 2025-12-12
+
+### Added
+
+- **IntelliSense Support**: Full TypeScript autocomplete powered by `csstype`
+  - Added `StyleBuilder` class for fluent, type-safe style building
+  - Added `createStyleBuilder()` function to create builder instances
+  - Added `styleObject()` function to convert style objects to strings with IntelliSense
+  - Added `getAliasHints()` for external tool integration
+  - New types: `CSSProperty`, `PropertyAlias`, `StyleObject`
+
+- **Integration Utilities**: Helper APIs for other libraries
+  - Added `BreakpointIntegration` class with utilities for parsing, validation, and extraction
+  - Added `createIntegration()` factory function
+  - Added `integrationUtils` for quick access to common operations
+  - Methods: `resolveAlias()`, `getAliases()`, `parseStyles()`, `extractProperties()`, `extractThemes()`, `extractBreakpoints()`, `extractStates()`, `filterByCondition()`, `toObject()`, `validate()`
+
+### Documentation
+
+- Added [INTELLISENSE.md](INTELLISENSE.md) - Comprehensive IntelliSense guide
+- Updated all documentation with IntelliSense examples
+- Added integration examples for styled-components, emotion, vanilla-extract
+
+### Dependencies
+
+- Added `csstype` ^3.2.3 for CSS property type definitions
+
 ## [1.3.0] - 2025-12-12
 
 ### Added

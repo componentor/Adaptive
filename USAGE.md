@@ -1,6 +1,6 @@
 # Usage Guide
 
-Complete guide for using `@componentor/breakpoints` in your projects.
+Complete guide for using `@componentor/breakpoint` in your projects.
 
 ## Table of Contents
 
@@ -18,25 +18,25 @@ Complete guide for using `@componentor/breakpoints` in your projects.
 ### NPM
 
 ```bash
-npm install @componentor/breakpoints
+npm install @componentor/breakpoint
 ```
 
 ### Yarn
 
 ```bash
-yarn add @componentor/breakpoints
+yarn add @componentor/breakpoint
 ```
 
 ### PNPM
 
 ```bash
-pnpm add @componentor/breakpoints
+pnpm add @componentor/breakpoint
 ```
 
 ## Quick Start
 
 ```typescript
-import { parse, getStyle } from '@componentor/breakpoints';
+import { parse, getStyle } from '@componentor/breakpoint';
 
 // 1. Define your styles with conditions
 const styles = 'color:blue; dark:color:lightblue; md:font-size:18px';
@@ -245,7 +245,7 @@ getStyle(cardStyles, { theme: 'dark', breakpoint: 'md', state: 'hover' });
 ### React
 
 ```typescript
-import { parse, getStyle } from '@componentor/breakpoints';
+import { parse, getStyle } from '@componentor/breakpoint';
 import { useMemo } from 'react';
 
 function Button({ styleString, theme, breakpoint, state }) {
@@ -277,7 +277,7 @@ function cssToObject(cssString) {
 
 ```typescript
 import { createContext, useContext, useMemo } from 'react';
-import { parse, getStyle, type ParsedStyles } from '@componentor/breakpoints';
+import { parse, getStyle, type ParsedStyles } from '@componentor/breakpoint';
 
 // Create context for theme and breakpoint
 const StyleContext = createContext({ theme: 'light', breakpoint: 'md' });
@@ -306,7 +306,7 @@ function MyComponent() {
 ```vue
 <script setup>
 import { computed } from 'vue';
-import { parse, getStyle } from '@componentor/breakpoints';
+import { parse, getStyle } from '@componentor/breakpoint';
 
 const props = defineProps({
   styles: String,
@@ -345,7 +345,7 @@ const styleObject = computed(() => {
 
 ```svelte
 <script>
-  import { parse, getStyle } from '@componentor/breakpoints';
+  import { parse, getStyle } from '@componentor/breakpoint';
 
   export let styles = '';
   export let theme = 'light';
@@ -374,7 +374,7 @@ const styleObject = computed(() => {
 ### Vanilla JavaScript
 
 ```javascript
-import { parse, getStyle } from '@componentor/breakpoints';
+import { parse, getStyle } from '@componentor/breakpoint';
 
 class StyledElement {
   constructor(element, styleString) {

@@ -1,17 +1,17 @@
 # Quick Start Guide
 
-Get started with `@componentor/breakpoints` in 5 minutes!
+Get started with `@componentor/breakpoint` in 5 minutes!
 
 ## Installation
 
 ```bash
-npm install @componentor/breakpoints
+npm install @componentor/breakpoint
 ```
 
 ## Basic Usage
 
 ```typescript
-import { parse, getStyle } from '@componentor/breakpoints';
+import { parse, getStyle } from '@componentor/breakpoint';
 
 // 1. Parse your style string (do this once, cache the result)
 const styles = parse('color:blue; dark:color:white; md:font-size:18px');
@@ -90,7 +90,7 @@ getStyle(button, { state: 'hover' });
 ## React Example
 
 ```typescript
-import { parse, getStyle } from '@componentor/breakpoints';
+import { parse, getStyle } from '@componentor/breakpoint';
 import { useMemo } from 'react';
 
 // Parse once outside component
@@ -121,7 +121,7 @@ function Button({ theme, isHovered }) {
 ## Vanilla JavaScript Example
 
 ```javascript
-import { parse, getStyle } from '@componentor/breakpoints';
+import { parse, getStyle } from '@componentor/breakpoint';
 
 const styles = parse('color:black; dark:color:white');
 
