@@ -2,6 +2,7 @@ export type Theme = 'dark' | 'light' | string;
 export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | string;
 export type State = 'hover' | 'active' | 'focus' | 'visited' | 'focus-visible' | 'focus-within' | 'disabled' | 'enabled' | 'checked' | string;
 export type BreakpointStrategy = 'mobile-first' | 'desktop-first' | 'exact';
+export type ThemeStrategy = 'strict' | 'fallback';
 
 export interface StyleConditions {
   theme?: Theme;
@@ -24,4 +25,5 @@ export interface GetStyleOptions {
   state?: State;
   breakpoint?: Breakpoint;
   breakpointStrategy?: BreakpointStrategy;
+  themeStrategy?: ThemeStrategy;
 }

@@ -138,7 +138,7 @@ export const parse = (input) => {
  * Extracts CSS styles that match the given context (theme, state, breakpoint).
  *
  * @param parsedStyles - The parsed styles object from parse()
- * @param options - Context options (theme, state, breakpoint, breakpointStrategy)
+ * @param options - Context options (theme, state, breakpoint, breakpointStrategy, themeStrategy)
  * @returns CSS style string with matching properties
  *
  * @example
@@ -149,9 +149,14 @@ export const parse = (input) => {
  * const parsed = parse('font-size:14px; md:font-size:18px; lg:font-size:24px');
  * getStyle(parsed, { breakpoint: 'lg', breakpointStrategy: 'mobile-first' });
  * // Returns: 'font-size: 24px;' (includes base + md + lg)
+ *
+ * @example
+ * const parsed = parse('color:blue; dark:color:white');
+ * getStyle(parsed, { theme: 'light', themeStrategy: 'fallback' });
+ * // Returns: 'color: blue;' (falls back to dark theme if light doesn't exist)
  */
 export const getStyle = (parsedStyles, options = {}) => {
-    const { theme, state, breakpoint, breakpointStrategy = 'exact' } = options;
+    const { theme, state, breakpoint, breakpointStrategy = 'exact', themeStrategy = 'strict' } = options;
     const matchingStyles = [];
     // Get breakpoint index for strategy matching
     const currentBreakpointIndex = breakpoint && BREAKPOINT_ORDER[breakpoint] !== undefined
@@ -161,9 +166,61 @@ export const getStyle = (parsedStyles, options = {}) => {
         const { conditions } = style;
         // Check if all conditions match
         let matches = true;
-        // If style has a theme condition, it must match
-        if (conditions.theme !== undefined && conditions.theme !== theme) {
-            matches = false;
+        // Handle theme matching based on strategy
+        if (conditions.theme !== undefined) {
+            if (themeStrategy === 'strict') {
+                // Strict: theme must match exactly
+                if (conditions.theme !== theme) {
+                    matches = false;
+                }
+            }
+            else if (themeStrategy === 'fallback') {
+                // Fallback: if theme is specified, try to match
+                // Priority: exact theme match > base > other theme fallback
+                // Only fallback to other themes if no base exists for this property
+                if (theme !== undefined && conditions.theme !== theme) {
+                    // Check if there's an exact theme match for this property
+                    const hasExactThemeMatch = parsedStyles.styles.some(s => s.property === style.property &&
+                        s.conditions.theme === theme &&
+                        s.conditions.breakpoint === conditions.breakpoint &&
+                        s.conditions.state === conditions.state);
+                    // Determine if we should skip fallback and prefer base instead
+                    let skipFallback = false;
+                    if (hasExactThemeMatch) {
+                        // Always prefer exact theme match
+                        skipFallback = true;
+                    }
+                    else if (state !== undefined && conditions.state === undefined) {
+                        // State requested, but fallback style doesn't have it
+                        // Prefer base over themed fallback in this case
+                        const hasBaseAtSameLevel = parsedStyles.styles.some(s => s.property === style.property &&
+                            s.conditions.theme === undefined &&
+                            s.conditions.breakpoint === conditions.breakpoint &&
+                            s.conditions.state === conditions.state);
+                        if (hasBaseAtSameLevel) {
+                            skipFallback = true;
+                        }
+                    }
+                    else if (breakpoint !== undefined && conditions.breakpoint === undefined) {
+                        // Breakpoint requested, but fallback style doesn't have it
+                        // Prefer any base style over themed fallback without the requested breakpoint
+                        const hasAnyBase = parsedStyles.styles.some(s => s.property === style.property &&
+                            s.conditions.theme === undefined &&
+                            s.conditions.state === conditions.state);
+                        if (hasAnyBase) {
+                            skipFallback = true;
+                        }
+                    }
+                    if (skipFallback) {
+                        matches = false;
+                    }
+                    // Otherwise, allow it as a fallback to other themes
+                }
+                else if (theme === undefined && conditions.theme !== undefined) {
+                    // No theme specified, but style has a theme - skip it even in fallback mode
+                    matches = false;
+                }
+            }
         }
         // If style has a state condition, it must match
         if (conditions.state !== undefined && conditions.state !== state) {

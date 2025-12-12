@@ -1,5 +1,43 @@
 # Changelog
 
+## [1.2.0] - 2025-12-12
+
+### Added
+
+- **Theme Strategy System**: Two strategies for theme fallback behavior
+  - `'strict'` (default): Only match the exact theme specified
+  - `'fallback'`: Use other available themes when the requested theme doesn't exist
+
+- **New Type**: `ThemeStrategy` exported for TypeScript users
+
+- **Enhanced getStyle API**: New `themeStrategy` option in `GetStyleOptions`
+  ```typescript
+  getStyle(parsed, {
+    theme: 'light',
+    themeStrategy: 'fallback' // or 'strict'
+  });
+  ```
+
+### Theme Fallback Behavior
+
+When using `themeStrategy: 'fallback'`:
+- **Priority**: exact theme match > base styles > other theme fallback
+- **Smart fallback**: When a breakpoint or state is requested but the fallback theme doesn't have it, base styles are preferred
+- **Example**: `color:blue; dark:color:white` with `theme: 'light'` → uses `dark:color:white` as fallback
+- **Context-aware**: Breakpoint/state context influences fallback behavior
+
+### Documentation
+
+- Added 24 new tests for theme strategies (89 total tests)
+- All existing tests pass with backwards compatibility
+- Comprehensive test coverage for theme + breakpoint + state combinations
+
+### Technical Details
+
+- Default strategy is 'strict' for backwards compatibility
+- Fallback logic respects breakpoint and state specificity
+- Base styles at specific breakpoints take precedence over themed fallbacks without those breakpoints
+
 ## [1.1.0] - 2025-12-12
 
 ### Added
