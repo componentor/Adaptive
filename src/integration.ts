@@ -130,7 +130,9 @@ export class BreakpointIntegration {
     const parsed = this.parseStyles(input);
     const states = new Set<string>();
     parsed.styles.forEach(s => {
-      if (s.conditions.state) states.add(s.conditions.state);
+      if (s.conditions.states) {
+        s.conditions.states.forEach(state => states.add(state));
+      }
     });
     return Array.from(states).sort();
   }
@@ -152,14 +154,18 @@ export class BreakpointIntegration {
     conditions: {
       theme?: string;
       breakpoint?: string;
-      state?: string;
+      states?: string[];
     }
   ): ParsedStyle[] {
     const parsed = this.parseStyles(input);
     return parsed.styles.filter(style => {
       if (conditions.theme && style.conditions.theme !== conditions.theme) return false;
       if (conditions.breakpoint && style.conditions.breakpoint !== conditions.breakpoint) return false;
-      if (conditions.state && style.conditions.state !== conditions.state) return false;
+      if (conditions.states && conditions.states.length > 0) {
+        // Check if all requested states are present in style's states
+        if (!style.conditions.states) return false;
+        if (!conditions.states.every(s => style.conditions.states!.includes(s))) return false;
+      }
       return true;
     });
   }
@@ -179,7 +185,7 @@ export class BreakpointIntegration {
 
     // Only include base styles (no conditions)
     parsed.styles.forEach(style => {
-      if (!style.conditions.theme && !style.conditions.breakpoint && !style.conditions.state) {
+      if (!style.conditions.theme && !style.conditions.breakpoint && (!style.conditions.states || style.conditions.states.length === 0)) {
         obj[style.property] = style.value;
       }
     });

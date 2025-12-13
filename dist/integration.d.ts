@@ -100,7 +100,7 @@ export declare class BreakpointIntegration {
     filterByCondition(input: string, conditions: {
         theme?: string;
         breakpoint?: string;
-        state?: string;
+        states?: string[];
     }): ParsedStyle[];
     /**
      * Convert parsed styles to a plain object

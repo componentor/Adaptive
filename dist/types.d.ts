@@ -6,7 +6,7 @@ export type ThemeStrategy = 'strict' | 'fallback';
 export interface StyleConditions {
     theme?: Theme;
     breakpoint?: Breakpoint;
-    state?: State;
+    states?: State[];
 }
 export interface ParsedStyle {
     property: string;
@@ -18,7 +18,7 @@ export interface ParsedStyles {
 }
 export interface GetStyleOptions {
     theme?: Theme;
-    state?: State;
+    states?: State[];
     breakpoint?: Breakpoint;
     breakpointStrategy?: BreakpointStrategy;
     themeStrategy?: ThemeStrategy;

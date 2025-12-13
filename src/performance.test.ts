@@ -39,7 +39,7 @@ describe('performance tests', () => {
 
     const start = performance.now();
     for (let i = 0; i < iterations; i++) {
-      getStyle(parsed, { theme: 'dark', breakpoint: 'md', state: 'hover' });
+      getStyle(parsed, { theme: 'dark', breakpoint: 'md', states: ['hover'] });
     }
     const end = performance.now();
     const timePerOperation = (end - start) / iterations;
@@ -66,7 +66,7 @@ describe('performance tests', () => {
     const start = performance.now();
     for (let i = 0; i < iterations; i++) {
       const parsed = parse(styleString);
-      getStyle(parsed, { theme: 'dark', breakpoint: 'lg', state: 'hover' });
+      getStyle(parsed, { theme: 'dark', breakpoint: 'lg', states: ['hover'] });
     }
     const end = performance.now();
     const timePerOperation = (end - start) / iterations;
@@ -87,7 +87,7 @@ describe('performance tests', () => {
     for (let i = 0; i < iterations; i++) {
       getStyle(parsed, { theme: 'dark' });
       getStyle(parsed, { breakpoint: 'md' });
-      getStyle(parsed, { state: 'hover' });
+      getStyle(parsed, { states: ['hover'] });
     }
     const end = performance.now();
     const timePerOperation = (end - start) / iterations;
@@ -137,7 +137,7 @@ describe('performance tests', () => {
         getStyle(p, { theme: 'dark' }); // Dark theme
         getStyle(p, { breakpoint: 'md' }); // Tablet
         getStyle(p, { theme: 'dark', breakpoint: 'lg' }); // Dark desktop
-        getStyle(p, { state: 'hover' }); // Hover state
+        getStyle(p, { states: ['hover'] }); // Hover state
       });
     }
 
@@ -158,7 +158,7 @@ describe('performance tests', () => {
     const start = performance.now();
     for (let i = 0; i < iterations; i++) {
       const parsed = parse(styleString);
-      getStyle(parsed, { theme: 'dark', breakpoint: 'md', state: 'hover' });
+      getStyle(parsed, { theme: 'dark', breakpoint: 'md', states: ['hover'] });
     }
     const end = performance.now();
     const timePerOperation = (end - start) / iterations;

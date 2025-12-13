@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.4.0] - 2025-12-13
+
+### Added
+
+- **Multiple States Support**: Combine multiple states in a single declaration
+  ```typescript
+  // Parse multiple states like hover:active:bg:red
+  const parsed = parse('hover:active:bg:red');
+  // Result: { property: 'background', value: 'red', conditions: { states: ['hover', 'active'] } }
+
+  // Match when all required states are present
+  getStyle(parsed, { states: ['hover', 'active'] }); // Returns: 'background: red;'
+  getStyle(parsed, { states: ['hover'] });            // Returns: '' (partial match fails)
+  getStyle(parsed, { states: ['hover', 'active', 'focus'] }); // Returns: 'background: red;' (superset OK)
+  ```
+
+- **CamelCase/PascalCase Property Names**: Write properties in any casing style
+  ```typescript
+  parse('fontSize:16px');            // → font-size: 16px
+  parse('BackgroundColor:blue');     // → background-color: blue
+  parse('borderTopLeftRadius:10px'); // → border-top-left-radius: 10px
+  ```
+  - Aliases still take priority over case conversion (`bg:blue` → `background: blue`)
+
+- **New Export**: `toKebabCase()` utility function for case conversion
+
+### Breaking Changes
+
+- **API Change**: `state` option renamed to `states` (array)
+  ```typescript
+  // Before (1.3.x)
+  getStyle(parsed, { state: 'hover' });
+
+  // After (1.4.0)
+  getStyle(parsed, { states: ['hover'] });
+  ```
+
+- **Type Change**: `StyleConditions.state` → `StyleConditions.states` (State[])
+- **Type Change**: `GetStyleOptions.state` → `GetStyleOptions.states` (State[])
+
+### Documentation
+
+- Added 12 new tests for multiple states and case conversion (140 total tests)
+- All existing tests updated and passing
+
 ## [1.3.3] - 2025-12-12
 
 ### Fixed

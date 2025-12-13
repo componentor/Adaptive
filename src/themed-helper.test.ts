@@ -97,10 +97,10 @@ describe('getThemedStyle helper', () => {
         dark:hover:opacity:0.7
       `);
 
-      const lightHover = getThemedStyle(styles, { state: 'hover' });
+      const lightHover = getThemedStyle(styles, { states: ['hover'] });
       expect(lightHover).toBe('opacity: 0.85;');
 
-      const darkHover = getThemedStyle(styles, { state: 'hover' }, true);
+      const darkHover = getThemedStyle(styles, { states: ['hover'] }, true);
       expect(darkHover).toBe('opacity: 0.7;');
     });
 
@@ -111,7 +111,7 @@ describe('getThemedStyle helper', () => {
         active:transform:scale(0.98)
       `);
 
-      const result = getThemedStyle(styles, { state: 'active' });
+      const result = getThemedStyle(styles, { states: ['active'] });
       expect(result).toContain('background: blue;'); // Base, not dark fallback
       expect(result).toContain('transform: scale(0.98);');
     });
@@ -130,13 +130,13 @@ describe('getThemedStyle helper', () => {
 
       const lightMdHover = getThemedStyle(styles, {
         breakpoint: 'md',
-        state: 'hover'
+        states: ['hover']
       });
       expect(lightMdHover).toBe('transform: scale(1.12);');
 
       const darkMdHover = getThemedStyle(styles, {
         breakpoint: 'md',
-        state: 'hover'
+        states: ['hover']
       }, true);
       expect(darkMdHover).toBe('transform: scale(1.2);');
     });
@@ -169,7 +169,7 @@ describe('getThemedStyle helper', () => {
       expect(dark).toContain('color: #e5e5e5;');
 
       // Dark theme hover
-      const darkHover = getThemedStyle(buttonStyles, { state: 'hover' }, true);
+      const darkHover = getThemedStyle(buttonStyles, { states: ['hover'] }, true);
       expect(darkHover).toContain('opacity: 0.85;');
     });
 
@@ -196,7 +196,7 @@ describe('getThemedStyle helper', () => {
       // Dark theme, medium screen, hover
       const darkMdHover = getThemedStyle(cardStyles, {
         breakpoint: 'md',
-        state: 'hover'
+        states: ['hover']
       }, true);
       expect(darkMdHover).toContain('background: #1f2937;');
       expect(darkMdHover).toContain('padding: 1.5rem;');

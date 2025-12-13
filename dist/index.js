@@ -1,10 +1,33 @@
 import { resolveProperty } from './aliases.js';
-export { registerAlias, registerAliases, clearCustomAliases, getAllAliases, isAlias, DEFAULT_ALIASES } from './aliases.js';
+export { registerAlias, registerAliases, clearCustomAliases, getAllAliases, isAlias, DEFAULT_ALIASES, toKebabCase } from './aliases.js';
 // Builder API with IntelliSense support
 export { StyleBuilder, createStyleBuilder, styleObject, getAliasHints } from './builder.js';
 // Integration utilities for other libraries
 export { BreakpointIntegration, createIntegration, integrationUtils } from './integration.js';
 const KNOWN_BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+// Helper to compare two optional string arrays
+const arraysEqual = (a, b) => {
+    if (a === undefined && b === undefined)
+        return true;
+    if (a === undefined || b === undefined)
+        return false;
+    if (a.length !== b.length)
+        return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((val, i) => val === sortedB[i]);
+};
+// Helper to check if all required states are present in current states
+const statesMatch = (styleStates, currentStates) => {
+    // No states on style = matches anything
+    if (!styleStates || styleStates.length === 0)
+        return true;
+    // Style has states but no current states provided = no match
+    if (!currentStates || currentStates.length === 0)
+        return false;
+    // All style states must be present in current states
+    return styleStates.every(s => currentStates.includes(s));
+};
 const BREAKPOINT_ORDER = {
     'xs': 0,
     'sm': 1,
@@ -108,13 +131,14 @@ export const parse = (input) => {
         if (!property || !value || !found)
             continue;
         const conditions = {};
+        const states = [];
         for (const condition of conditionParts) {
             // Categorize each condition
             if (KNOWN_BREAKPOINTS.includes(condition)) {
                 conditions.breakpoint = condition;
             }
             else if (KNOWN_STATES.includes(condition)) {
-                conditions.state = condition;
+                states.push(condition);
             }
             else if (KNOWN_THEMES.includes(condition)) {
                 conditions.theme = condition;
@@ -131,6 +155,10 @@ export const parse = (input) => {
                     conditions.theme = condition;
                 }
             }
+        }
+        // Add collected states to conditions if any
+        if (states.length > 0) {
+            conditions.states = states;
         }
         // Resolve property alias to full CSS property name
         const resolvedProperty = resolveProperty(property);
@@ -164,7 +192,7 @@ export const parse = (input) => {
  * // Returns: 'color: blue;' (falls back to dark theme if light doesn't exist)
  */
 export const getStyle = (parsedStyles, options = {}) => {
-    const { theme, state, breakpoint, breakpointStrategy = 'exact', themeStrategy = 'strict' } = options;
+    const { theme, states, breakpoint, breakpointStrategy = 'exact', themeStrategy = 'strict' } = options;
     const matchingStyles = [];
     // Get breakpoint index for strategy matching
     const currentBreakpointIndex = breakpoint && BREAKPOINT_ORDER[breakpoint] !== undefined
@@ -191,20 +219,20 @@ export const getStyle = (parsedStyles, options = {}) => {
                     const hasExactThemeMatch = parsedStyles.styles.some(s => s.property === style.property &&
                         s.conditions.theme === theme &&
                         s.conditions.breakpoint === conditions.breakpoint &&
-                        s.conditions.state === conditions.state);
+                        arraysEqual(s.conditions.states, conditions.states));
                     // Determine if we should skip fallback and prefer base instead
                     let skipFallback = false;
                     if (hasExactThemeMatch) {
                         // Always prefer exact theme match
                         skipFallback = true;
                     }
-                    else if (state !== undefined && conditions.state === undefined) {
-                        // State requested, but fallback style doesn't have it
+                    else if (states !== undefined && states.length > 0 && (!conditions.states || conditions.states.length === 0)) {
+                        // States requested, but fallback style doesn't have them
                         // Prefer base over themed fallback in this case
                         const hasBaseAtSameLevel = parsedStyles.styles.some(s => s.property === style.property &&
                             s.conditions.theme === undefined &&
                             s.conditions.breakpoint === conditions.breakpoint &&
-                            s.conditions.state === conditions.state);
+                            arraysEqual(s.conditions.states, conditions.states));
                         if (hasBaseAtSameLevel) {
                             skipFallback = true;
                         }
@@ -214,7 +242,7 @@ export const getStyle = (parsedStyles, options = {}) => {
                         // Prefer any base style over themed fallback without the requested breakpoint
                         const hasAnyBase = parsedStyles.styles.some(s => s.property === style.property &&
                             s.conditions.theme === undefined &&
-                            s.conditions.state === conditions.state);
+                            arraysEqual(s.conditions.states, conditions.states));
                         if (hasAnyBase) {
                             skipFallback = true;
                         }
@@ -230,8 +258,8 @@ export const getStyle = (parsedStyles, options = {}) => {
                 }
             }
         }
-        // If style has a state condition, it must match
-        if (conditions.state !== undefined && conditions.state !== state) {
+        // If style has states condition, all must be present in requested states
+        if (!statesMatch(conditions.states, states)) {
             matches = false;
         }
         // Handle breakpoint matching based on strategy
@@ -271,7 +299,7 @@ export const getStyle = (parsedStyles, options = {}) => {
         }
         // If no conditions specified on the style, it always applies (base styles)
         const hasConditions = conditions.theme !== undefined ||
-            conditions.state !== undefined ||
+            (conditions.states !== undefined && conditions.states.length > 0) ||
             conditions.breakpoint !== undefined;
         if (!hasConditions) {
             // Base style with no conditions - always include

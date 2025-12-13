@@ -33,7 +33,7 @@ describe('CSS Property Aliases', () => {
       expect(styles.styles[0].property).toBe('color');
       expect(styles.styles[1].property).toBe('color');
 
-      const result = getStyle(styles, { state: 'hover' });
+      const result = getStyle(styles, { states: ['hover'] });
       expect(result).toBe('color: blue;');
     });
 
@@ -120,7 +120,7 @@ describe('CSS Property Aliases', () => {
       expect(normal).toContain('background: blue;');
       expect(normal).toContain('opacity: 1;');
 
-      const hover = getStyle(styles, { state: 'hover' });
+      const hover = getStyle(styles, { states: ['hover'] });
       expect(hover).toContain('background: darkblue;');
       expect(hover).toContain('opacity: 0.8;');
     });
@@ -139,7 +139,7 @@ describe('CSS Property Aliases', () => {
       const result = getStyle(styles, {
         theme: 'dark',
         breakpoint: 'md',
-        state: 'hover'
+        states: ['hover']
       });
 
       expect(result).toContain('padding: 30px;');
@@ -269,11 +269,11 @@ describe('CSS Property Aliases', () => {
         dark:hover:bg:#1e3a8a
       `);
 
-      const lightHover = getStyle(buttonStyles, { state: 'hover' });
+      const lightHover = getStyle(buttonStyles, { states: ['hover'] });
       expect(lightHover).toContain('background: darkblue;');
       expect(lightHover).toContain('box-shadow: 0 2px 4px rgba(0,0,0,0.2);');
 
-      const darkHover = getStyle(buttonStyles, { theme: 'dark', state: 'hover' });
+      const darkHover = getStyle(buttonStyles, { theme: 'dark', states: ['hover'] });
       expect(darkHover).toContain('background: #1e3a8a;');
     });
 

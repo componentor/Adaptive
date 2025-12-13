@@ -3,6 +3,31 @@
  */
 
 /**
+ * Converts camelCase or PascalCase to kebab-case
+ * @param str - The string to convert
+ * @returns kebab-case string
+ *
+ * @example
+ * toKebabCase('fontSize'); // Returns: 'font-size'
+ * toKebabCase('BackgroundColor'); // Returns: 'background-color'
+ * toKebabCase('borderTopLeftRadius'); // Returns: 'border-top-left-radius'
+ */
+export function toKebabCase(str: string): string {
+  // If already kebab-case or lowercase, return as-is
+  if (str === str.toLowerCase() && !str.match(/[A-Z]/)) {
+    return str;
+  }
+
+  return str
+    // Insert hyphen before uppercase letters
+    .replace(/([A-Z])/g, '-$1')
+    // Convert to lowercase
+    .toLowerCase()
+    // Remove leading hyphen if PascalCase
+    .replace(/^-/, '');
+}
+
+/**
  * Built-in property aliases
  * These common aliases are available by default
  */
@@ -188,16 +213,18 @@ export function getAllAliases(): Record<string, string> {
 }
 
 /**
- * Resolve a property name, converting alias to full property if applicable
- * Priority: custom aliases > built-in aliases > original property name
+ * Resolve a property name, converting alias to full property if applicable.
+ * Handles camelCase/PascalCase conversion to kebab-case.
+ * Priority: custom aliases > built-in aliases > kebab-case conversion
  *
- * @param property - Property name (could be an alias)
- * @returns Full CSS property name
+ * @param property - Property name (could be an alias, camelCase, or PascalCase)
+ * @returns Full CSS property name in kebab-case
  *
  * @example
  * resolveProperty('bg'); // Returns: 'background'
  * resolveProperty('background'); // Returns: 'background'
- * resolveProperty('unknown'); // Returns: 'unknown'
+ * resolveProperty('fontSize'); // Returns: 'font-size'
+ * resolveProperty('BackgroundColor'); // Returns: 'background-color'
  */
 export function resolveProperty(property: string): string {
   // Check custom aliases first (highest priority)
@@ -210,8 +237,8 @@ export function resolveProperty(property: string): string {
     return DEFAULT_ALIASES[property];
   }
 
-  // Return original property name if no alias found
-  return property;
+  // Convert camelCase/PascalCase to kebab-case
+  return toKebabCase(property);
 }
 
 /**

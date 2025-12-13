@@ -165,7 +165,7 @@ describe('theme strategy', () => {
 
       const result = getStyle(styles, {
         theme: 'dark',
-        state: 'hover',
+        states: ['hover'],
         themeStrategy: 'strict'
       });
 
@@ -182,7 +182,7 @@ describe('theme strategy', () => {
       // Light theme doesn't have hover:opacity, should fallback to dark:hover
       const result = getStyle(styles, {
         theme: 'light',
-        state: 'hover',
+        states: ['hover'],
         themeStrategy: 'fallback'
       });
 
@@ -204,7 +204,7 @@ describe('theme strategy', () => {
       const result = getStyle(styles, {
         theme: 'dark',
         breakpoint: 'md',
-        state: 'hover',
+        states: ['hover'],
         themeStrategy: 'strict'
       });
 
@@ -223,7 +223,7 @@ describe('theme strategy', () => {
       const result = getStyle(styles, {
         theme: 'light',
         breakpoint: 'md',
-        state: 'hover',
+        states: ['hover'],
         themeStrategy: 'fallback'
       });
 
@@ -351,7 +351,7 @@ describe('theme strategy', () => {
       // Dark theme hover
       const darkHover = getStyle(buttonStyles, {
         theme: 'dark',
-        state: 'hover',
+        states: ['hover'],
         themeStrategy: 'strict'
       });
       expect(darkHover).toContain('background: skyblue;');
@@ -360,7 +360,7 @@ describe('theme strategy', () => {
       // Light theme with fallback (no explicit light theme, uses base + dark fallback where needed)
       const lightActive = getStyle(buttonStyles, {
         theme: 'light',
-        state: 'active',
+        states: ['active'],
         themeStrategy: 'fallback'
       });
       expect(lightActive).toContain('background: blue;'); // Base (light theme not defined)

@@ -46,7 +46,7 @@ describe('parse', () => {
     expect(result.styles[0]).toEqual({
       property: 'background',
       value: 'blue',
-      conditions: { state: 'hover' },
+      conditions: { states: ['hover'] },
     });
   });
 
@@ -59,7 +59,7 @@ describe('parse', () => {
       conditions: {
         theme: 'dark',
         breakpoint: 'md',
-        state: 'hover',
+        states: ['hover'],
       },
     });
   });
@@ -71,13 +71,13 @@ describe('parse', () => {
     expect(result1.styles[0].conditions).toEqual({
       theme: 'dark',
       breakpoint: 'md',
-      state: 'hover',
+      states: ['hover'],
     });
 
     expect(result2.styles[0].conditions).toEqual({
       theme: 'dark',
       breakpoint: 'md',
-      state: 'hover',
+      states: ['hover'],
     });
   });
 
@@ -95,7 +95,7 @@ describe('parse', () => {
 
     for (const state of states) {
       const result = parse(`${state}:opacity:0.5`);
-      expect(result.styles[0].conditions.state).toBe(state);
+      expect(result.styles[0].conditions.states).toEqual([state]);
     }
   });
 
@@ -147,18 +147,18 @@ describe('parse', () => {
     expect(result.styles[3].conditions.breakpoint).toBe('lg');
 
     // State styles
-    expect(result.styles[4].conditions.state).toBe('hover');
+    expect(result.styles[4].conditions.states).toEqual(['hover']);
 
     // Combined conditions
     expect(result.styles[5].conditions).toEqual({
       theme: 'dark',
-      state: 'hover',
+      states: ['hover'],
     });
 
     expect(result.styles[6].conditions).toEqual({
       theme: 'dark',
       breakpoint: 'md',
-      state: 'hover',
+      states: ['hover'],
     });
   });
 
@@ -219,7 +219,7 @@ describe('getStyle', () => {
 
   it('should return only matching state styles', () => {
     const parsed = parse('opacity:1; hover:opacity:0.8');
-    const result = getStyle(parsed, { state: 'hover' });
+    const result = getStyle(parsed, { states: ['hover'] });
     expect(result).toContain('opacity: 0.8;');
   });
 
@@ -228,7 +228,7 @@ describe('getStyle', () => {
     const result = getStyle(parsed, {
       theme: 'dark',
       breakpoint: 'md',
-      state: 'hover',
+      states: ['hover'],
     });
     expect(result).toContain('color: purple;');
   });
@@ -272,7 +272,7 @@ describe('getStyle', () => {
     const result = getStyle(parsed, {
       theme: 'dark',
       breakpoint: 'lg',
-      state: 'hover',
+      states: ['hover'],
     });
 
     expect(result).toContain('display: block;');
@@ -339,7 +339,7 @@ describe('integration tests', () => {
     expect(css).toContain('gap: 20px;');
 
     // Light theme, desktop, hover
-    css = getStyle(parsed, { breakpoint: 'lg', state: 'hover' });
+    css = getStyle(parsed, { breakpoint: 'lg', states: ['hover'] });
     expect(css).toContain('padding: 30px;');
     expect(css).toContain('opacity: 0.95;');
   });
@@ -354,5 +354,94 @@ describe('integration tests', () => {
     expect(getStyle(parsed, { breakpoint: 'md' })).toContain('font-size: 18px;');
     expect(getStyle(parsed, { breakpoint: 'lg' })).toContain('font-size: 20px;');
     expect(getStyle(parsed, { breakpoint: 'xl' })).toContain('font-size: 24px;');
+  });
+});
+
+describe('multiple states', () => {
+  it('should parse multiple states like hover:active:bg:red', () => {
+    const result = parse('hover:active:bg:red');
+    expect(result.styles).toHaveLength(1);
+    expect(result.styles[0]).toEqual({
+      property: 'background',
+      value: 'red',
+      conditions: { states: ['hover', 'active'] },
+    });
+  });
+
+  it('should parse three states', () => {
+    const result = parse('hover:focus:active:opacity:0.5');
+    expect(result.styles[0].conditions.states).toEqual(['hover', 'focus', 'active']);
+  });
+
+  it('should match styles when all states are present', () => {
+    const parsed = parse('opacity:1; hover:active:opacity:0.5');
+
+    // Both hover and active present - should match
+    const result = getStyle(parsed, { states: ['hover', 'active'] });
+    expect(result).toBe('opacity: 0.5;');
+  });
+
+  it('should not match when only partial states present', () => {
+    const parsed = parse('hover:active:opacity:0.5');
+
+    // Only hover present - should not match
+    const result = getStyle(parsed, { states: ['hover'] });
+    expect(result).toBe('');
+  });
+
+  it('should match when more states present than required', () => {
+    const parsed = parse('hover:opacity:0.8');
+
+    // hover + active + focus present - should still match hover style
+    const result = getStyle(parsed, { states: ['hover', 'active', 'focus'] });
+    expect(result).toBe('opacity: 0.8;');
+  });
+
+  it('should work with theme and breakpoint conditions', () => {
+    const parsed = parse('dark:md:hover:active:bg:purple');
+
+    const result = getStyle(parsed, {
+      theme: 'dark',
+      breakpoint: 'md',
+      states: ['hover', 'active']
+    });
+    expect(result).toBe('background: purple;');
+  });
+});
+
+describe('camelCase and PascalCase property names', () => {
+  it('should convert camelCase to kebab-case', () => {
+    const result = parse('fontSize:16px');
+    expect(result.styles[0].property).toBe('font-size');
+  });
+
+  it('should convert PascalCase to kebab-case', () => {
+    const result = parse('FontSize:16px');
+    expect(result.styles[0].property).toBe('font-size');
+  });
+
+  it('should handle complex camelCase properties', () => {
+    const result = parse('borderTopLeftRadius:10px');
+    expect(result.styles[0].property).toBe('border-top-left-radius');
+  });
+
+  it('should work with conditions', () => {
+    const result = parse('dark:md:backgroundColor:black');
+    expect(result.styles[0].property).toBe('background-color');
+    expect(result.styles[0].conditions).toEqual({
+      theme: 'dark',
+      breakpoint: 'md'
+    });
+  });
+
+  it('should still resolve aliases before kebab-case conversion', () => {
+    const result = parse('bg:blue');
+    expect(result.styles[0].property).toBe('background'); // Alias takes priority
+  });
+
+  it('should work in getStyle output', () => {
+    const parsed = parse('fontSize:14px; marginTop:10px');
+    const css = getStyle(parsed);
+    expect(css).toBe('font-size: 14px; margin-top: 10px;');
   });
 });

@@ -127,7 +127,7 @@ describe('breakpoint strategy', () => {
       `);
 
       const result = getStyle(complex, {
-        state: 'hover',
+        states: ['hover'],
         breakpoint: 'md',
         breakpointStrategy: 'desktop-first'
       });

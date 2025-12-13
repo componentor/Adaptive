@@ -1,6 +1,6 @@
 import type { ParsedStyles, GetStyleOptions, Theme } from './types.js';
 export type { ParsedStyles, ParsedStyle, GetStyleOptions, StyleConditions, Theme, Breakpoint, State, BreakpointStrategy, ThemeStrategy } from './types.js';
-export { registerAlias, registerAliases, clearCustomAliases, getAllAliases, isAlias, DEFAULT_ALIASES } from './aliases.js';
+export { registerAlias, registerAliases, clearCustomAliases, getAllAliases, isAlias, DEFAULT_ALIASES, toKebabCase } from './aliases.js';
 export { StyleBuilder, createStyleBuilder, styleObject, getAliasHints, type CSSProperty, type PropertyAlias, type StyleObject } from './builder.js';
 export { BreakpointIntegration, createIntegration, integrationUtils } from './integration.js';
 /**
