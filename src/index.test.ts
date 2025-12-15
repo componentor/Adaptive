@@ -50,6 +50,26 @@ describe('parse', () => {
     });
   });
 
+  it('should parse style with current state condition', () => {
+    const result = parse('current:background:blue');
+    expect(result.styles).toHaveLength(1);
+    expect(result.styles[0]).toEqual({
+      property: 'background',
+      value: 'blue',
+      conditions: { states: ['current'] },
+    });
+  });
+
+  it('should parse current state with theme condition', () => {
+    const result = parse('current:dark:background:black');
+    expect(result.styles).toHaveLength(1);
+    expect(result.styles[0]).toEqual({
+      property: 'background',
+      value: 'black',
+      conditions: { theme: 'dark', states: ['current'] },
+    });
+  });
+
   it('should parse style with multiple conditions', () => {
     const result = parse('dark:md:hover:background:black');
     expect(result.styles).toHaveLength(1);
@@ -221,6 +241,56 @@ describe('getStyle', () => {
     const parsed = parse('opacity:1; hover:opacity:0.8');
     const result = getStyle(parsed, { states: ['hover'] });
     expect(result).toContain('opacity: 0.8;');
+  });
+
+  it('should return current state styles when current is in states array', () => {
+    const parsed = parse('background:white; current:background:blue; current:font-weight:600');
+    const result = getStyle(parsed, { states: ['current'] });
+    expect(result).toContain('background: blue;');
+    expect(result).toContain('font-weight: 600;');
+  });
+
+  it('should return current state with theme', () => {
+    const parsed = parse('background:white; current:background:blue; current:dark:background:darkblue');
+
+    // Light mode with current
+    let result = getStyle(parsed, { states: ['current'] });
+    expect(result).toContain('background: blue;');
+
+    // Dark mode with current
+    result = getStyle(parsed, { theme: 'dark', states: ['current'] });
+    expect(result).toContain('background: darkblue;');
+  });
+
+  it('should not return current state styles when current is not in states', () => {
+    const parsed = parse('background:white; current:background:blue');
+    const result = getStyle(parsed, { states: [] });
+    expect(result).toBe('background: white;');
+  });
+
+  it('should handle real-world cstyleItem with current state (Header.vue pattern)', () => {
+    // This mirrors the actual cstyleItem from Header.vue
+    const cstyleItem = 'pl:20px;pr:20px;hover:background:gray;current:background:blue;current:dark:background:darkblue;current:font-weight:600';
+    const parsed = parse(cstyleItem);
+
+    // Without current state - should only get base styles
+    let result = getStyle(parsed, { states: [] });
+    expect(result).toContain('padding-left: 20px;');
+    expect(result).toContain('padding-right: 20px;');
+    expect(result).not.toContain('background: blue;');
+    expect(result).not.toContain('font-weight: 600;');
+
+    // With current state - should get current styles
+    result = getStyle(parsed, { states: ['current'] });
+    expect(result).toContain('padding-left: 20px;');
+    expect(result).toContain('padding-right: 20px;');
+    expect(result).toContain('background: blue;');
+    expect(result).toContain('font-weight: 600;');
+
+    // With current state and dark theme - should get dark current styles
+    result = getStyle(parsed, { theme: 'dark', states: ['current'] });
+    expect(result).toContain('background: darkblue;');
+    expect(result).toContain('font-weight: 600;');
   });
 
   it('should handle multiple matching conditions', () => {

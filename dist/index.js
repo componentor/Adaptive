@@ -36,7 +36,7 @@ const BREAKPOINT_ORDER = {
     'xl': 4,
     '2xl': 5,
 };
-const KNOWN_STATES = ['hover', 'active', 'focus', 'visited', 'focus-visible', 'focus-within', 'disabled', 'enabled', 'checked'];
+const KNOWN_STATES = ['hover', 'active', 'focus', 'visited', 'focus-visible', 'focus-within', 'disabled', 'enabled', 'checked', 'current'];
 const KNOWN_THEMES = ['dark', 'light'];
 // Common CSS properties (not exhaustive, but covers most cases)
 const KNOWN_CSS_PROPERTIES = new Set([

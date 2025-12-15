@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.4.2] - 2025-12-15
+
+### Added
+
+- **New State: `current`**: Added `current` to the list of known states for navigation highlighting
+  ```typescript
+  // Useful for indicating the current page/route in navigation
+  const navItem = parse('pl:20px; hover:bg:gray; current:bg:blue; current:font-weight:600');
+
+  // When item is current
+  getStyle(navItem, { states: ['current'] });
+  // Returns: 'padding-left: 20px; background: blue; font-weight: 600;'
+
+  // With theme support
+  const themed = parse('current:bg:blue; current:dark:bg:darkblue');
+  getStyle(themed, { theme: 'dark', states: ['current'] });
+  // Returns: 'background: darkblue;'
+  ```
+
+- Added 6 new tests for `current` state functionality (146 total tests)
+
 ## [1.4.1] - 2025-12-13
 
 ### Fixed
