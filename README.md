@@ -43,7 +43,7 @@ getStyle(styles, { theme: 'dark' });        // → "background: purple; color: w
 | **States** | `hover:opacity:0.8` | Hover effects |
 | **Multiple States** | `hover:active:bg:red` | Combine states! |
 | **Combine All** | `dark:md:hover:bg:purple` | All conditions at once! |
-| **Aliases** | `bg` instead of `background` | 75+ shortcuts built-in |
+| **Aliases** | `bg` instead of `background` | 95+ shortcuts built-in |
 | **Custom Themes** | `sunset:bg:orange` | Name your themes anything |
 
 ---
@@ -160,7 +160,7 @@ parse('borderTopLeftRadius:8px'); // → border-top-left-radius: 8px
 
 ## ✨ Property Aliases (Type Less, Do More)
 
-We've got **75+ shortcuts** so you can write styles faster:
+We've got **95+ shortcuts** so you can write styles faster:
 
 ```typescript
 // These are the same:
@@ -174,17 +174,20 @@ parse('bg:blue; text:white; p:20px; shadow:0 2px 4px black');  // ✨ Much bette
 |-------|--------------|
 | `bg` | `background` |
 | `text` | `color` |
+| `op` | `opacity` |
 | `p` | `padding` |
 | `m` | `margin` |
 | `w` | `width` |
 | `h` | `height` |
+| `fw` | `font-weight` |
 | `rounded` | `border-radius` |
 | `shadow` | `box-shadow` |
 | `justify` | `justify-content` |
 | `items` | `align-items` |
 | `grid-cols` | `grid-template-columns` |
+| `inset` | `inset` |
 
-[See all 75+ aliases →](src/aliases.ts)
+[See all 95+ aliases →](src/aliases.ts)
 
 ### Make Your Own Aliases
 
@@ -362,7 +365,7 @@ getAllAliases();      // → { bg: 'background', text: 'color', ... }
 clearCustomAliases();
 
 // View built-in aliases
-DEFAULT_ALIASES;      // → Read-only map of all 75+ built-in aliases
+DEFAULT_ALIASES;      // → Read-only map of all 95+ built-in aliases
 ```
 
 ---

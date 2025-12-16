@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.4.3] - 2025-12-16
+
+### Added
+
+- **Expanded Property Aliases**: Added 20 new built-in aliases (95 total, up from 75)
+  - **Border properties**: `border-t-color`, `border-b-color`, `border-l-color`, `border-r-color`
+  - **Border styles**: `border-t-style`, `border-b-style`, `border-l-style`, `border-r-style`
+  - **Border widths**: `border-t-w`, `border-b-w`, `border-l-w`, `border-r-w`
+  - **Position**: `inset` for positioning shorthand
+  - **Opacity**: `op` for opacity
+  - **Font**: `fw` for font-weight
+
+  ```typescript
+  // New border aliases
+  parse('border-t-color:red; border-b-w:2px; border-l-style:dashed');
+  // → border-top-color: red; border-bottom-width: 2px; border-left-style: dashed;
+
+  // New utility aliases
+  parse('op:0.5; fw:600;');
+  // → opacity: 0.5; font-weight: 600;
+  ```
+
 ## [1.4.2] - 2025-12-15
 
 ### Added
