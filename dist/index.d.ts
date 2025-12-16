@@ -3,6 +3,7 @@ export type { ParsedStyles, ParsedStyle, GetStyleOptions, StyleConditions, Theme
 export { registerAlias, registerAliases, clearCustomAliases, getAllAliases, isAlias, DEFAULT_ALIASES, toKebabCase } from './aliases.js';
 export { StyleBuilder, createStyleBuilder, styleObject, getAliasHints, type CSSProperty, type PropertyAlias, type StyleObject } from './builder.js';
 export { BreakpointIntegration, createIntegration, integrationUtils } from './integration.js';
+export { normalizeCstyle, mergeCstyle } from './helpers.js';
 /**
  * Parses an enhanced style string with breakpoint, theme, and state prefixes.
  *

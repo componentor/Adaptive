@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.4.4] - 2025-12-16
+## [1.4.5] - 2025-12-16
 
 ### Fixed
 
@@ -9,6 +9,12 @@
   - Source code is now embedded directly in sourcemap files
   - Users no longer need the `src` folder present in `node_modules` for debugging
   - Sourcemaps work correctly without increasing package size with unnecessary source files
+
+## [1.4.4] - 2025-12-16
+
+### Internal
+
+- Version skipped
 
 ## [1.4.3] - 2025-12-16
 

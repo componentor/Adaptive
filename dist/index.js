@@ -4,6 +4,8 @@ export { registerAlias, registerAliases, clearCustomAliases, getAllAliases, isAl
 export { StyleBuilder, createStyleBuilder, styleObject, getAliasHints } from './builder.js';
 // Integration utilities for other libraries
 export { BreakpointIntegration, createIntegration, integrationUtils } from './integration.js';
+// Helper utilities for style merging
+export { normalizeCstyle, mergeCstyle } from './helpers.js';
 const KNOWN_BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'];
 // Helper to compare two optional string arrays
 const arraysEqual = (a, b) => {
