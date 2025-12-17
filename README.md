@@ -1,4 +1,4 @@
-# @componentor/breakpoint
+# @componentor/adaptive
 
 > Write styles once. Use them everywhere.
 
@@ -16,12 +16,12 @@ Instead of juggling CSS files, media queries, and theme logic, write `dark:md:ho
 
 **1. Install**
 ```bash
-npm install @componentor/breakpoint
+npm install @componentor/adaptive
 ```
 
 **2. Write your first style**
 ```typescript
-import { parse, getStyle } from '@componentor/breakpoint';
+import { parse, getStyle } from '@componentor/adaptive';
 
 const styles = parse('bg:blue; text:white; hover:bg:darkblue; dark:bg:purple');
 
@@ -192,7 +192,7 @@ parse('bg:blue; text:white; p:20px; shadow:0 2px 4px black');  // ✨ Much bette
 ### Make Your Own Aliases
 
 ```typescript
-import { registerAlias } from '@componentor/breakpoint';
+import { registerAlias } from '@componentor/adaptive';
 
 registerAlias('bgc', 'background-color');
 registerAlias('fw', 'font-weight');
@@ -271,7 +271,7 @@ getStyle(styles, { breakpoint: 'md', breakpointStrategy: 'desktop-first' });
 We've got a **type-safe builder API** with full autocomplete for all CSS properties!
 
 ```typescript
-import { createStyleBuilder } from '@componentor/breakpoint';
+import { createStyleBuilder } from '@componentor/adaptive';
 
 const styles = createStyleBuilder()
   .style('background', 'blue')     // ← Full CSS autocomplete!
@@ -376,7 +376,7 @@ Works out of the box in modern browsers:
 
 ```html
 <script type="module">
-  import { parse, getStyle } from './node_modules/@componentor/breakpoint/dist/index.js';
+  import { parse, getStyle } from './node_modules/@componentor/adaptive/dist/index.js';
 
   const parsed = parse('color:blue; dark:color:purple');
   console.log(getStyle(parsed, { theme: 'dark' }));
@@ -401,7 +401,7 @@ Works out of the box in modern browsers:
 ### React Component
 
 ```typescript
-import { parse, getStyle } from '@componentor/breakpoint';
+import { parse, getStyle } from '@componentor/adaptive';
 import { useMemo } from 'react';
 
 function Button({ variant = 'primary', size = 'md', isDark = false }) {
@@ -426,7 +426,7 @@ function Button({ variant = 'primary', size = 'md', isDark = false }) {
 
 ```vue
 <script setup>
-import { parse, getThemedStyle } from '@componentor/breakpoint';
+import { parse, getThemedStyle } from '@componentor/adaptive';
 import { computed } from 'vue';
 
 const isDark = inject('isDark');
@@ -449,7 +449,7 @@ const styles = computed(() => getThemedStyle(parsed, {}, isDark.value));
 Fully typed with IntelliSense support!
 
 ```typescript
-import type { ParsedStyles, GetStyleOptions, Theme, Breakpoint, State } from '@componentor/breakpoint';
+import type { ParsedStyles, GetStyleOptions, Theme, Breakpoint, State } from '@componentor/adaptive';
 
 const options: GetStyleOptions = {
   theme: 'dark',

@@ -1,39 +1,39 @@
 /**
- * Normalizes cstyle input to a string format
+ * Normalizes adapt input to a string format
  */
-export function normalizeCstyle(cstyle: string | object | any[] | null | undefined): string {
-	if (!cstyle) return '';
-	if (typeof cstyle === 'string') return cstyle;
-	if (Array.isArray(cstyle)) {
-		return cstyle.map(item => {
+export function normalizeAdapt(adapt: string | object | any[] | null | undefined): string {
+	if (!adapt) return '';
+	if (typeof adapt === 'string') return adapt;
+	if (Array.isArray(adapt)) {
+		return adapt.map(item => {
 			if (typeof item === 'string') return item;
 			return Object.entries(item)
 				.map(([key, value]) => `${key}:${value}`)
 				.join('; ');
 		}).join('; ');
 	}
-	return Object.entries(cstyle)
+	return Object.entries(adapt)
 		.map(([key, value]) => `${key}:${value}`)
 		.join('; ');
 }
 
-type CstyleInput = string | object | any[] | null | undefined;
+type AdaptInput = string | object | any[] | null | undefined;
 
 /**
- * Merges multiple cstyle inputs
+ * Merges multiple adapt inputs
  * Left arguments override right arguments
- * @example mergeCstyle(child, parent) - child overrides parent
- * @example mergeCstyle(a, b, c, d) - a overrides b, b overrides c, c overrides d
+ * @example mergeAdapt(child, parent) - child overrides parent
+ * @example mergeAdapt(a, b, c, d) - a overrides b, b overrides c, c overrides d
  */
-export function mergeCstyle(...cstyles: CstyleInput[]): string {
-	if (cstyles.length === 0) return '';
-	if (cstyles.length === 1) return normalizeCstyle(cstyles[0]);
+export function mergeAdapt(...adapts: AdaptInput[]): string {
+	if (adapts.length === 0) return '';
+	if (adapts.length === 1) return normalizeAdapt(adapts[0]);
 
 	const styleMap: Record<string, string> = {};
 
 	// Process right-to-left so left args override right args
-	for (let i = cstyles.length - 1; i >= 0; i--) {
-		const normalized = normalizeCstyle(cstyles[i]);
+	for (let i = adapts.length - 1; i >= 0; i--) {
+		const normalized = normalizeAdapt(adapts[i]);
 		if (!normalized) continue;
 
 		normalized.split(';').forEach(prop => {

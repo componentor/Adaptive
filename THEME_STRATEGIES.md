@@ -191,7 +191,7 @@ getStyle(styles, {
 ### System Theme Detection
 
 ```typescript
-import { parse, getStyle } from '@componentor/breakpoint';
+import { parse, getStyle } from '@componentor/adaptive';
 
 // Detect system preference
 const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches

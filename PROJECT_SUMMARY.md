@@ -1,4 +1,4 @@
-# Project Summary: @componentor/breakpoint
+# Project Summary: @componentor/adaptive
 
 ## Overview
 

@@ -1,13 +1,13 @@
 /**
- * Normalizes cstyle input to a string format
+ * Normalizes adapt input to a string format
  */
-export function normalizeCstyle(cstyle) {
-    if (!cstyle)
+export function normalizeAdapt(adapt) {
+    if (!adapt)
         return '';
-    if (typeof cstyle === 'string')
-        return cstyle;
-    if (Array.isArray(cstyle)) {
-        return cstyle.map(item => {
+    if (typeof adapt === 'string')
+        return adapt;
+    if (Array.isArray(adapt)) {
+        return adapt.map(item => {
             if (typeof item === 'string')
                 return item;
             return Object.entries(item)
@@ -15,25 +15,25 @@ export function normalizeCstyle(cstyle) {
                 .join('; ');
         }).join('; ');
     }
-    return Object.entries(cstyle)
+    return Object.entries(adapt)
         .map(([key, value]) => `${key}:${value}`)
         .join('; ');
 }
 /**
- * Merges multiple cstyle inputs
+ * Merges multiple adapt inputs
  * Left arguments override right arguments
- * @example mergeCstyle(child, parent) - child overrides parent
- * @example mergeCstyle(a, b, c, d) - a overrides b, b overrides c, c overrides d
+ * @example mergeAdapt(child, parent) - child overrides parent
+ * @example mergeAdapt(a, b, c, d) - a overrides b, b overrides c, c overrides d
  */
-export function mergeCstyle(...cstyles) {
-    if (cstyles.length === 0)
+export function mergeAdapt(...adapts) {
+    if (adapts.length === 0)
         return '';
-    if (cstyles.length === 1)
-        return normalizeCstyle(cstyles[0]);
+    if (adapts.length === 1)
+        return normalizeAdapt(adapts[0]);
     const styleMap = {};
     // Process right-to-left so left args override right args
-    for (let i = cstyles.length - 1; i >= 0; i--) {
-        const normalized = normalizeCstyle(cstyles[i]);
+    for (let i = adapts.length - 1; i >= 0; i--) {
+        const normalized = normalizeAdapt(adapts[i]);
         if (!normalized)
             continue;
         normalized.split(';').forEach(prop => {

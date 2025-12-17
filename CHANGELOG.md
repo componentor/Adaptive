@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.0] - 2025-12-17
+
+### Changed
+
+- **Package Renamed**: Changed package name from `@componentor/breakpoint` to `@componentor/adaptive`
+  - Better reflects the library's broader capability for adaptive CSS styles (themes, breakpoints, states)
+  - All imports should now use `@componentor/adaptive`
+  - Updated all documentation to reflect the new name
+
 ## [1.4.6] - 2025-12-17
 
 ### Changed

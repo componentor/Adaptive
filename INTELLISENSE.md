@@ -9,7 +9,7 @@ This library provides comprehensive TypeScript IntelliSense support for CSS prop
 The builder API provides full autocomplete for CSS properties and aliases:
 
 ```typescript
-import { createStyleBuilder, parse } from '@componentor/breakpoint';
+import { createStyleBuilder, parse } from '@componentor/adaptive';
 
 // Create a builder with IntelliSense
 const styles = createStyleBuilder()
@@ -30,7 +30,7 @@ const parsed = parse(styles);
 Use a typed object for defining styles:
 
 ```typescript
-import { styleObject, parse } from '@componentor/breakpoint';
+import { styleObject, parse } from '@componentor/adaptive';
 
 const styles = styleObject({
   // Full CSS property autocomplete
@@ -57,7 +57,7 @@ const parsed = parse(styles);
 Access comprehensive CSS types powered by `csstype`:
 
 ```typescript
-import type { CSSProperty, PropertyAlias, StyleObject } from '@componentor/breakpoint';
+import type { CSSProperty, PropertyAlias, StyleObject } from '@componentor/adaptive';
 
 // CSSProperty includes all CSS properties + our aliases
 const prop1: CSSProperty = 'background';  // ✓
@@ -83,7 +83,7 @@ const styles: StyleObject = {
 Use the `BreakpointIntegration` class to integrate breakpoint parsing into your library:
 
 ```typescript
-import { createIntegration } from '@componentor/breakpoint';
+import { createIntegration } from '@componentor/adaptive';
 
 // Create an integration instance
 const integration = createIntegration();
@@ -122,7 +122,7 @@ const errors = integration.validate('bg:blue; invalid-syntax');
 For one-off operations:
 
 ```typescript
-import { integrationUtils } from '@componentor/breakpoint';
+import { integrationUtils } from '@componentor/adaptive';
 
 // Resolve alias
 const property = integrationUtils.resolveAlias('bg');
@@ -150,7 +150,7 @@ const errors = integrationUtils.validate('bg:blue; p:10px');
 Generate autocomplete hints for your IDE extension or developer tool:
 
 ```typescript
-import { getAliasHints } from '@componentor/breakpoint';
+import { getAliasHints } from '@componentor/adaptive';
 
 const hints = getAliasHints();
 // [
@@ -170,7 +170,7 @@ const hints = getAliasHints();
 
 ```typescript
 import styled from 'styled-components';
-import { createStyleBuilder } from '@componentor/breakpoint';
+import { createStyleBuilder } from '@componentor/adaptive';
 
 const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   ${props => {
@@ -199,7 +199,7 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 
 ```typescript
 import { css } from '@emotion/react';
-import { styleObject } from '@componentor/breakpoint';
+import { styleObject } from '@componentor/adaptive';
 
 const buttonStyles = css(styleObject({
   background: 'blue',
@@ -215,7 +215,7 @@ const buttonStyles = css(styleObject({
 
 ```typescript
 import { style } from '@vanilla-extract/css';
-import { integrationUtils } from '@componentor/breakpoint';
+import { integrationUtils } from '@componentor/adaptive';
 
 const buttonClass = style(
   integrationUtils.toObject('bg:blue; text:white; p:10px 20px; rounded:4px')

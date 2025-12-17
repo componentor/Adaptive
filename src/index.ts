@@ -11,7 +11,7 @@ export { StyleBuilder, createStyleBuilder, styleObject, getAliasHints, type CSSP
 export { BreakpointIntegration, createIntegration, integrationUtils } from './integration.js';
 
 // Helper utilities for style merging
-export { normalizeCstyle, mergeCstyle } from './helpers.js';
+export { normalizeAdapt, mergeAdapt } from './helpers.js';
 
 const KNOWN_BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'];
 
