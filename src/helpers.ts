@@ -17,52 +17,38 @@ export function normalizeCstyle(cstyle: string | object | any[] | null | undefin
 		.join('; ');
 }
 
+type CstyleInput = string | object | any[] | null | undefined;
+
 /**
- * Merges parent and child cstyle strings
- * Child properties override parent properties
- * Properties not specified in child are inherited from parent
+ * Merges multiple cstyle inputs
+ * Left arguments override right arguments
+ * @example mergeCstyle(child, parent) - child overrides parent
+ * @example mergeCstyle(a, b, c, d) - a overrides b, b overrides c, c overrides d
  */
-export function mergeCstyle(
-	parentCstyle: string | object | any[] | null | undefined,
-	childCstyle: string | object | any[] | null | undefined
-): string {
-	// If no parent, just return normalized child
-	if (!parentCstyle) return normalizeCstyle(childCstyle);
-	// If no child, just return normalized parent
-	if (!childCstyle) return normalizeCstyle(parentCstyle);
+export function mergeCstyle(...cstyles: CstyleInput[]): string {
+	if (cstyles.length === 0) return '';
+	if (cstyles.length === 1) return normalizeCstyle(cstyles[0]);
 
-	// Normalize both to strings
-	const parentStr = normalizeCstyle(parentCstyle);
-	const childStr = normalizeCstyle(childCstyle);
-
-	// Parse parent into a map
 	const styleMap: Record<string, string> = {};
-	parentStr.split(';').forEach(prop => {
-		const trimmed = prop.trim();
-		if (trimmed) {
-			const colonIndex = trimmed.indexOf(':');
-			if (colonIndex > -1) {
-				const key = trimmed.substring(0, colonIndex).trim();
-				const value = trimmed.substring(colonIndex + 1).trim();
-				if (key) styleMap[key] = value;
-			}
-		}
-	});
 
-	// Merge child properties (overrides parent)
-	childStr.split(';').forEach(prop => {
-		const trimmed = prop.trim();
-		if (trimmed) {
-			const colonIndex = trimmed.indexOf(':');
-			if (colonIndex > -1) {
-				const key = trimmed.substring(0, colonIndex).trim();
-				const value = trimmed.substring(colonIndex + 1).trim();
-				if (key) styleMap[key] = value;
-			}
-		}
-	});
+	// Process right-to-left so left args override right args
+	for (let i = cstyles.length - 1; i >= 0; i--) {
+		const normalized = normalizeCstyle(cstyles[i]);
+		if (!normalized) continue;
 
-	// Convert back to string
+		normalized.split(';').forEach(prop => {
+			const trimmed = prop.trim();
+			if (trimmed) {
+				const colonIndex = trimmed.indexOf(':');
+				if (colonIndex > -1) {
+					const key = trimmed.substring(0, colonIndex).trim();
+					const value = trimmed.substring(colonIndex + 1).trim();
+					if (key) styleMap[key] = value;
+				}
+			}
+		});
+	}
+
 	return Object.entries(styleMap)
 		.map(([key, value]) => `${key}:${value}`)
 		.join(';');

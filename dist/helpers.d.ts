@@ -2,10 +2,13 @@
  * Normalizes cstyle input to a string format
  */
 export declare function normalizeCstyle(cstyle: string | object | any[] | null | undefined): string;
+type CstyleInput = string | object | any[] | null | undefined;
 /**
- * Merges parent and child cstyle strings
- * Child properties override parent properties
- * Properties not specified in child are inherited from parent
+ * Merges multiple cstyle inputs
+ * Left arguments override right arguments
+ * @example mergeCstyle(child, parent) - child overrides parent
+ * @example mergeCstyle(a, b, c, d) - a overrides b, b overrides c, c overrides d
  */
-export declare function mergeCstyle(parentCstyle: string | object | any[] | null | undefined, childCstyle: string | object | any[] | null | undefined): string;
+export declare function mergeCstyle(...cstyles: CstyleInput[]): string;
+export {};
 //# sourceMappingURL=helpers.d.ts.map

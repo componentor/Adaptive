@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.6] - 2025-12-17
+
+### Changed
+
+- **`mergeCstyle` now accepts variadic arguments**: Merge any number of cstyle inputs
+  - Left arguments override right arguments
+  - `mergeCstyle(a, b, c, d)` - `a` overrides `b`, `b` overrides `c`, `c` overrides `d`
+  - Backwards compatible with existing two-argument usage
+
 ## [1.4.5] - 2025-12-16
 
 ### Fixed
