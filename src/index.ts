@@ -243,10 +243,11 @@ export const getStyle = (
         // Priority: exact theme match > base > other theme fallback
         // Only fallback to other themes if no base exists for this property
         if (theme !== undefined && conditions.theme !== theme) {
-          // Check if there's an exact theme match for this property
-          const hasExactThemeMatch = parsedStyles.styles.some(s =>
+          // Check if there's an exact theme match or a base style for this property
+          // Base styles (no theme) should be preferred over falling back to other themes
+          const hasExactThemeMatchOrBase = parsedStyles.styles.some(s =>
             s.property === style.property &&
-            s.conditions.theme === theme &&
+            (s.conditions.theme === theme || s.conditions.theme === undefined) &&
             s.conditions.breakpoint === conditions.breakpoint &&
             arraysEqual(s.conditions.states, conditions.states)
           );
@@ -254,8 +255,8 @@ export const getStyle = (
           // Determine if we should skip fallback and prefer base instead
           let skipFallback = false;
 
-          if (hasExactThemeMatch) {
-            // Always prefer exact theme match
+          if (hasExactThemeMatchOrBase) {
+            // Always prefer exact theme match or base style over themed fallback
             skipFallback = true;
           } else if (states !== undefined && states.length > 0 && (!conditions.states || conditions.states.length === 0)) {
             // States requested, but fallback style doesn't have them
