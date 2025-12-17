@@ -17,12 +17,12 @@ describe('getThemedStyle helper', () => {
       expect(result).toBe('color: white;');
     });
 
-    it('should fallback to available theme when requested theme does not exist', () => {
+    it('should prefer base style over themed fallback when requested theme does not exist', () => {
       const styles = parse('color:gray; dark:color:white');
 
-      // Light theme doesn't exist, should fallback to dark
+      // Light theme doesn't exist, but base style exists - prefer base over dark fallback
       const result = getThemedStyle(styles, {});
-      expect(result).toBe('color: white;');
+      expect(result).toBe('color: gray;');
     });
 
     it('should use base styles when no themed styles exist', () => {
@@ -42,11 +42,11 @@ describe('getThemedStyle helper', () => {
       expect(result).toBe('color: purple;');
     });
 
-    it('should fallback when custom theme does not exist', () => {
+    it('should prefer base over themed fallback when custom theme does not exist', () => {
       const styles = parse('color:gray; dark:color:white');
 
       const result = getThemedStyle(styles, { theme: 'sunset' });
-      expect(result).toBe('color: white;'); // Falls back to dark
+      expect(result).toBe('color: gray;'); // Prefers base over dark fallback
     });
 
     it('should prefer custom theme over preferDark parameter', () => {

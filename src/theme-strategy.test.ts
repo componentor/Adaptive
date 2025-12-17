@@ -47,27 +47,26 @@ describe('theme strategy', () => {
       expect(lightResult).toBe('color: black;');
     });
 
-    it('should fallback to other theme when current theme does not exist', () => {
+    it('should prefer base style over themed fallback when current theme does not exist', () => {
       const styles = parse('color:blue; dark:color:white');
 
-      // Light theme requested but doesn't exist, should fallback to dark
+      // Light theme requested but doesn't exist, prefer base over dark fallback
       const lightResult = getStyle(styles, { theme: 'light', themeStrategy: 'fallback' });
-      expect(lightResult).toContain('color:');
-      expect(lightResult).toContain('white'); // Falls back to dark theme
+      expect(lightResult).toBe('color: blue;'); // Prefers base over dark fallback
     });
 
-    it('should fallback to dark when light is not defined', () => {
+    it('should prefer base over dark fallback when light is not defined', () => {
       const styles = parse('background:gray; dark:background:black');
 
       const result = getStyle(styles, { theme: 'light', themeStrategy: 'fallback' });
-      expect(result).toBe('background: black;'); // Falls back to dark
+      expect(result).toBe('background: gray;'); // Prefers base over dark fallback
     });
 
-    it('should fallback to light when dark is not defined', () => {
+    it('should prefer base over light fallback when dark is not defined', () => {
       const styles = parse('background:gray; light:background:white');
 
       const result = getStyle(styles, { theme: 'dark', themeStrategy: 'fallback' });
-      expect(result).toBe('background: white;'); // Falls back to light
+      expect(result).toBe('background: gray;'); // Prefers base over light fallback
     });
 
     it('should use base style when no theme styles exist', () => {
@@ -106,22 +105,21 @@ describe('theme strategy', () => {
       expect(result).toBe('font-size: 20px;');
     });
 
-    it('should apply fallback theme with breakpoints', () => {
+    it('should prefer base breakpoint style over themed fallback', () => {
       const styles = parse(`
         font-size:14px;
         md:font-size:18px;
         dark:md:font-size:20px
       `);
 
-      // Light theme doesn't have md:font-size, should fallback to dark:md
+      // Light theme doesn't have md:font-size, but base md exists - prefer base
       const result = getStyle(styles, {
         theme: 'light',
         breakpoint: 'md',
         themeStrategy: 'fallback'
       });
 
-      expect(result).toContain('font-size:');
-      expect(result).toContain('20px'); // Fallback to dark:md
+      expect(result).toBe('font-size: 18px;'); // Prefers base md over dark:md fallback
     });
 
     it('should handle complex breakpoint and theme combinations', () => {
@@ -172,22 +170,21 @@ describe('theme strategy', () => {
       expect(result).toBe('opacity: 0.7;');
     });
 
-    it('should apply fallback theme with states', () => {
+    it('should prefer base state style over themed fallback', () => {
       const styles = parse(`
         opacity:1;
         hover:opacity:0.8;
         dark:hover:opacity:0.6
       `);
 
-      // Light theme doesn't have hover:opacity, should fallback to dark:hover
+      // Light theme doesn't have hover:opacity, but base hover exists - prefer base
       const result = getStyle(styles, {
         theme: 'light',
         states: ['hover'],
         themeStrategy: 'fallback'
       });
 
-      expect(result).toContain('opacity:');
-      expect(result).toContain('0.6'); // Fallback to dark:hover
+      expect(result).toBe('opacity: 0.8;'); // Prefers base hover over dark:hover fallback
     });
   });
 
@@ -243,13 +240,12 @@ describe('theme strategy', () => {
       expect(sunsetResult).toBe('color: orange;');
     });
 
-    it('should work with custom theme names in fallback mode', () => {
+    it('should prefer base over custom theme fallback', () => {
       const styles = parse('color:blue; midnight:color:purple');
 
-      // Sunset theme doesn't exist, fallback to midnight
+      // Sunset theme doesn't exist, prefer base over midnight fallback
       const result = getStyle(styles, { theme: 'sunset', themeStrategy: 'fallback' });
-      expect(result).toContain('color:');
-      expect(result).toContain('purple'); // Fallback to midnight
+      expect(result).toBe('color: blue;'); // Prefers base over midnight fallback
     });
   });
 
@@ -283,9 +279,9 @@ describe('theme strategy', () => {
       expect(darkStrict).toContain('padding: 10px;');
       expect(darkStrict).toContain('margin: 5px;');
 
-      // Light theme with fallback: doesn't have color (fallback to dark), has padding
+      // Light theme with fallback: doesn't have color (prefer base over dark fallback), has padding
       const lightFallback = getStyle(styles, { theme: 'light', themeStrategy: 'fallback' });
-      expect(lightFallback).toContain('color: white;'); // Fallback to dark
+      expect(lightFallback).toContain('color: black;'); // Prefers base over dark fallback
       expect(lightFallback).toContain('padding: 15px;'); // Has light
       expect(lightFallback).toContain('margin: 5px;'); // Base
     });

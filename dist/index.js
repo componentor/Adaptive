@@ -194,7 +194,7 @@ export const parse = (input) => {
  * // Returns: 'color: blue;' (falls back to dark theme if light doesn't exist)
  */
 export const getStyle = (parsedStyles, options = {}) => {
-    const { theme, states, breakpoint, breakpointStrategy = 'exact', themeStrategy = 'strict' } = options;
+    const { theme, states, breakpoint, breakpointStrategy = 'mobile-first', themeStrategy = 'fallback' } = options;
     const matchingStyles = [];
     // Get breakpoint index for strategy matching
     const currentBreakpointIndex = breakpoint && BREAKPOINT_ORDER[breakpoint] !== undefined

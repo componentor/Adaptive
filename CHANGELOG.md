@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.5.1] - 2025-12-17
+
+### Fixed
+
+- **Theme Fallback Strategy**: Base styles are now correctly preferred over themed fallbacks
+  - When using `themeStrategy: 'fallback'`, if the requested theme doesn't exist but a base style does, the base style is now used instead of falling back to another theme
+  - This fixes issues where `md:bg:white` (base) was incorrectly overridden by `md:dark:bg:black` when in light mode
+  - getStyle now defaults to 'mobile-first' and 'fallback'
+  - Priority order is now: exact theme match > base style > other theme fallback
+
+  ```typescript
+  const styles = parse('bg:white; md:bg:lightgray; md:dark:bg:darkgray');
+
+  // Before (incorrect): would use darkgray as fallback
+  // After (correct): uses lightgray (base at md breakpoint)
+  getStyle(styles, {
+    theme: 'light',
+    breakpoint: 'md',
+    themeStrategy: 'fallback'
+  });
+  // Returns: 'background: lightgray;'
+  ```
+
 ## [1.5.0] - 2025-12-17
 
 ### Changed

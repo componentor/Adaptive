@@ -305,7 +305,7 @@ describe('getStyle', () => {
 
   it('should not return styles when conditions do not match', () => {
     const parsed = parse('dark:color:white');
-    const result = getStyle(parsed, { theme: 'light' });
+    const result = getStyle(parsed, { theme: 'light', themeStrategy: 'strict' });
     expect(result).toBe('');
   });
 
@@ -353,7 +353,7 @@ describe('getStyle', () => {
 
   it('should return empty string for no matches', () => {
     const parsed = parse('dark:color:white');
-    const result = getStyle(parsed, { theme: 'light' });
+    const result = getStyle(parsed, { theme: 'light', themeStrategy: 'strict' });
     expect(result).toBe('');
   });
 

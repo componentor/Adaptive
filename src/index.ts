@@ -216,7 +216,7 @@ export const getStyle = (
   parsedStyles: ParsedStyles,
   options: GetStyleOptions = {}
 ): string => {
-  const { theme, states, breakpoint, breakpointStrategy = 'exact', themeStrategy = 'strict' } = options;
+  const { theme, states, breakpoint, breakpointStrategy = 'mobile-first', themeStrategy = 'fallback' } = options;
 
   const matchingStyles: Array<{ property: string; value: string }> = [];
 
